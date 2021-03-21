@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from threading import Thread
-
+from asyncio import Event
 from serial import Serial
 
 
@@ -10,6 +10,7 @@ class ISensor(Thread):
         self.serial = Serial(port, baudrate=baudrate, timeout=10)
         self.current = {}
         self.loop = False
+        self.event_read = Event()
         if autostart:
             self.start()
 
@@ -19,6 +20,8 @@ class ISensor(Thread):
         self.loop = True
         while self.loop:
             self.current = self._read()
+            self.event_read.set()
+            self.event_read.clear()
 
     @abstractmethod
     def _read(self) -> dict:
