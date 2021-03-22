@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b877933e-1e36-4de5-9e28-34bc94eee541" name="carbox">
+        <fileTransfer rootFolder="/home/visualdust/workspaces" accessType="SFTP" host="10.0.0.7" port="22" sshConfigId="f5ccba64-5254-46e9-8399-7d6b18e7791a" sshConfig="visualdust@10.0.0.7:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

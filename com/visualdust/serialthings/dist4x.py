@@ -1,5 +1,6 @@
 from abc import ABC
 from random import random
+
 from isensor import *
 
 
@@ -7,8 +8,8 @@ class Dist4x(ISensor, ABC):
     def __init__(self, port, baudrate, name=None):
         if name is None:
             name = "Sensor#" + str(random())
-
-        super(Dist4x, self).__init__(port, baudrate, name)
+        self.serial = Serial(port, baudrate=baudrate, timeout=10)
+        super(Dist4x, self).__init__(name)
 
     def _read(self) -> dict:
         while self.serial.read().hex() != 'ff':

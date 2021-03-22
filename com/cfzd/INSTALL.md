@@ -53,7 +53,7 @@
 
     ```Shell
     python scripts/convert_tusimple.py --root $TUSIMPLEROOT
-    # this will generate segmentations and two list files: train_gt.txt and test.txt
+    # this will generate segmentations and two list files: train_gt.txt and Thz_test.txt
     ```
 
 5. Install CULane evaluation tools (Only required for testing). 

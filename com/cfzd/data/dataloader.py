@@ -63,10 +63,10 @@ def get_test_loader(batch_size, data_root,dataset, distributed):
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
     if dataset == 'CULane':
-        test_dataset = LaneTestDataset(data_root,os.path.join(data_root, 'list/test.txt'),img_transform = img_transforms)
+        test_dataset = LaneTestDataset(data_root,os.path.join(data_root, 'list/Thz_test.txt'),img_transform = img_transforms)
         cls_num_per_lane = 18
     elif dataset == 'Tusimple':
-        test_dataset = LaneTestDataset(data_root,os.path.join(data_root, 'test.txt'), img_transform = img_transforms)
+        test_dataset = LaneTestDataset(data_root,os.path.join(data_root, 'Thz_test.txt'), img_transform = img_transforms)
         cls_num_per_lane = 56
 
     if distributed:

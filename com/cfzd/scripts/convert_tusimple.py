@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # testing set
     names,line_txt = get_tusimple_list(args.root, ['test_tasks_0627.json'])
     # generate testing set for testing
-    with open(os.path.join(args.root,'test.txt'),'w') as fp:
+    with open(os.path.join(args.root,'Thz_test.txt'),'w') as fp:
         for name in names:
             fp.write(name + '\n')
 

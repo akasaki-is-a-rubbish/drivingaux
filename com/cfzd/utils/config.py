@@ -68,10 +68,10 @@ class Config(object):
         >>> cfg.filename
         "/home/kchen/projects/mmcv/tests/data/config/a.py"
         >>> cfg.item4
-        'test'
+        'Thz_test'
         >>> cfg
         "Config [path: /home/kchen/projects/mmcv/tests/data/config/a.py]: "
-        "{'item1': [1, 2], 'item2': {'a': 0}, 'item3': True, 'item4': 'test'}"
+        "{'item1': [1, 2], 'item2': {'a': 0}, 'item3': True, 'item4': 'Thz_test'}"
     """
 
     @staticmethod

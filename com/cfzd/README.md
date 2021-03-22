@@ -71,9 +71,9 @@ For evaluation, run
 mkdir tmp
 # This a bad example, you should put the temp files outside the project.
 
-python test.py configs/culane.py --test_model path_to_culane_18.pth --test_work_dir ./tmp
+python Thz_test.py configs/culane.py --test_model path_to_culane_18.pth --test_work_dir ./tmp
 
-python test.py configs/tusimple.py --test_model path_to_tusimple_18.pth --test_work_dir ./tmp
+python Thz_test.py configs/tusimple.py --test_model path_to_tusimple_18.pth --test_work_dir ./tmp
 ```
 
 Same as training, multi-gpu evaluation is also supported.
@@ -93,10 +93,10 @@ Since the testing set of Tusimple is not ordered, the visualized video might loo
 To test the runtime, please run
 ```Shell
 python speed_simple.py  
-# this will test the speed with a simple protocol and requires no additional dependencies
+# this will Thz_test the speed with a simple protocol and requires no additional dependencies
 
 python speed_real.py
-# this will test the speed with real video or camera input
+# this will Thz_test the speed with real video or camera input
 ```
 It will loop 100 times and calculate the average runtime and fps in your environment.
 

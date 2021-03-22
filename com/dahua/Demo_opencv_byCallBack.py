@@ -573,7 +573,7 @@ def demo():
     trigModeEnumNode.contents.release(trigModeEnumNode)
 
     # 注册拉流回调函数
-    userInfo = b"test"
+    userInfo = b"Thz_test"
     nRet = streamSource.contents.attachGrabbingEx(streamSource, frameCallbackFuncEx, userInfo)
     if (nRet != 0):
         print("attachGrabbingEx fail!")

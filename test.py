@@ -83,7 +83,7 @@ def train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size, params=N
                 tf.cast(tf.argmax(y_hat, axis=1) == tf.cast(y, dtype=tf.int64), dtype=tf.int64)).numpy()
             n += y.shape[0]
         test_acc = evaluate_accuracy(test_iter, net)
-        print('epoch %d, loss %.4f, train acc %.3f, test acc %.3f' % (
+        print('epoch %d, loss %.4f, train acc %.3f, Thz_test acc %.3f' % (
             epoch + 1, train_l_sum / n, train_acc_sum / n, test_acc))
 
 

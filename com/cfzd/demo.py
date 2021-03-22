@@ -51,7 +51,7 @@ if __name__ == "__main__":
         img_w, img_h = 1640, 590
         row_anchor = culane_row_anchor
     elif cfg.dataset == 'Tusimple':
-        splits = ['test.txt']
+        splits = ['Thz_test.txt']
         datasets = [LaneTestDataset(cfg.data_root, os.path.join(cfg.data_root, split), img_transform=img_transforms) for
                     split in splits]
         img_w, img_h = 1280, 720
