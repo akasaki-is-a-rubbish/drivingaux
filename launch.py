@@ -8,6 +8,13 @@ from com.visualdust.serialthings.lidar import Lidar
 from utils.logger import Logger
 from utils.util import *
 
+"""
+Prehooks
+"""
+sensor_config = json.load(open("./config/sensor.json"))
+websockets_config = json.load(open("./config/websocket.json"))
+vision_config = json.load(open("./config/vision.json"))
+
 logger = Logger("Launcher")
 print_txt(open("./res/banner.txt"))
 logger.banner().print_os_info().banner()
@@ -19,9 +26,12 @@ hub = Hub("HUB").register(lidar)
 
 async def client_handler(websocket, path):
     logger.log("Client handler started.")
-    while True:
-        await websocket.send(json.dumps(SValues))
-        await asyncio.sleep(0.1)
+    try:
+        while True:
+            await websocket.send(json.dumps(SValues))
+            await asyncio.sleep(0.1)
+    except:
+        logger.log("Client seems disconnected. Ignored.")
 
 
 async def socket_serve():
@@ -34,6 +44,7 @@ async def socket_serve():
 async def main():
     hub.start()
     asyncio.create_task(socket_serve())
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

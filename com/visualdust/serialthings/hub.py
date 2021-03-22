@@ -31,6 +31,7 @@ class Hub(object):
 
     def start(self) -> None:
         self.loop = True
+        self.logger.log("Started to observe.")
         for key in self.watching:
             asyncio.create_task(self.run_single(self.watching[key]))
 
