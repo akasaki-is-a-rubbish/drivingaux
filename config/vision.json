@@ -1,0 +1,8 @@
+{
+  "camera": "/dev/video0",
+  "reshape": true,
+  "input_width": 1920,
+  "input_height": 1080,
+  "reshape_width": 800,
+  "reshape_height": 288
+}

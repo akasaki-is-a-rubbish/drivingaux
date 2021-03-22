@@ -1,3 +1,7 @@
-[
-
-]
+{
+  "dist4x_01": "/dev/ttyUSB0",
+  "dist4x_02": "/dev/ttyUSB1",
+  "dist4x_03": "/dev/ttyUSB2",
+  "dist4x_04": "/dev/ttyUSB3",
+  "lidar": "/dev/ttyUSB4"
+}
