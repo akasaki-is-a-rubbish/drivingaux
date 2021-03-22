@@ -7,6 +7,7 @@ from serial import Serial
 class ISensor(Thread):
     def __init__(self, name=None, autostart=True):
         Thread.__init__(self, name=name)
+        self.name = name
         self.current = {}
         self.loop = False
         self.event_read = Event()
