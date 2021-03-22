@@ -8,11 +8,6 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 filepath = "/home/visualdust/workspace/temp/22号Gl261胶质瘤石蜡标本/"
 outpath = "/home/visualdust/Desktop/sample_out/with_max_and_min/"
 
-"""
-时域峰峰值、频域峰值、频域积分、某个频率点强度等特征的图
-"""
-
-
 def __parseList__(str_lines):
     index = []
     axis_1 = []
