@@ -17,7 +17,7 @@ sensor_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
 vision_config = json.load(open("./config/vision.json"))
 
-logger = Logger("[⚙]Launcher")
+logger = Logger("[\033[92m⚙\033[0m]Launcher")
 print_txt(open("./res/banner.txt"))
 logger.banner().print_os_info().banner()
 
