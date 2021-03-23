@@ -1,0 +1,3 @@
+[submodule "com/hex11"]
+	url = https://github.yuuza.net/akasaki-is-a-rubbish/VehicleNetBackend.git
+	path = com/hex11
