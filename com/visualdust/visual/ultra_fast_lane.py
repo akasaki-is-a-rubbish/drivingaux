@@ -12,35 +12,35 @@ from utils.logger import Logger
 
 
 class LaneDetector:
-    def __init__(self, config):
-        self.logger = Logger(self)
+    def __init__(this, config):
+        this.logger = Logger(this)
         assert config["backbone"] in \
                ['18', '34', '50', '101', '152', '50next', '101next', '50wide', '101wide']
-        self.net = parsingNet(pretrained=False,
+        this.net = parsingNet(pretrained=False,
                               backbone=config["backbone"],
                               cls_dim=(config["griding_num"] + 1,
                                        config["cls_num_per_lane"], 4),
                               use_aux=False)
-        self.logger.log("Loading model...")
-        self.state_dict = torch.load(config["model"], map_location='cpu')['model']
-        self.compatible_state_dict = {}
-        for k, v in self.state_dict.items():
+        this.logger.log("Loading model...")
+        this.state_dict = torch.load(config["model"], map_location='cpu')['model']
+        this.compatible_state_dict = {}
+        for k, v in this.state_dict.items():
             if 'module.' in k:
-                self.compatible_state_dict[k[7:]] = v
+                this.compatible_state_dict[k[7:]] = v
             else:
-                self.compatible_state_dict[k] = v
-        self.net.load_state_dict(self.compatible_state_dict, strict=False)
-        self.net.eval()
-        self.logger.log("Model ready.")
-        self.preprocessing_transform = transforms.Compose([
+                this.compatible_state_dict[k] = v
+        this.net.load_state_dict(this.compatible_state_dict, strict=False)
+        this.net.eval()
+        this.logger.log("Model ready.")
+        this.preprocessing_transform = transforms.Compose([
             transforms.Resize((288, 800)),
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         ])
-        self.logger.log("Detector ready.")
+        this.logger.log("Detector ready.")
 
-    def now(self):
+    def now(this):
         pass
 
-    def attach(self,video_source):
+    def attach(this,video_source):
         pass

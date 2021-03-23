@@ -5,34 +5,34 @@ from serial import Serial
 
 
 class ISensor:
-    def __init__(self, name: str, autostart=True):
-        self.thread = Thread(None, self.run, 'sensor-' + name)
-        self.name = name
-        self.current = {}
-        self.loop = False
-        self.event_read = Event() # FIXME: asyncio.Event is not thread-safe
+    def __init__(this, name: str, autostart=True):
+        this.thread = Thread(None, this.run, 'sensor-' + name)
+        this.name = name
+        this.current = {}
+        this.loop = False
+        this.event_read = Event() # FIXME: asyncio.Event is not thread-safe
         if autostart:
-            self.thread.start()
+            this.thread.start()
 
-    def run(self) -> None:
-        if self.loop:
-            print("Already running:", self)
-        self.loop = True
-        while self.loop:
-            self.current = self._read()
-            self.event_read.set()
-            self.event_read.clear()
+    def run(this) -> None:
+        if this.loop:
+            print("Already running:", this)
+        this.loop = True
+        while this.loop:
+            this.current = this._read()
+            this.event_read.set()
+            this.event_read.clear()
 
     @abstractmethod
-    def _read(self):
+    def _read(this):
         # read and process data here
         pass
     
-    def start(self):
-        self.thread.start()
+    def start(this):
+        this.thread.start()
 
-    def stop(self):
-        self.loop = False
+    def stop(this):
+        this.loop = False
 
-    def now(self) -> dict:
-        return self.current
+    def now(this) -> dict:
+        return this.current

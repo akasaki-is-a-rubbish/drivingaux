@@ -3,9 +3,9 @@ from abc import *
 
 class Camlike:
     @abstractmethod
-    def next(self):
+    def next(this):
         pass
 
     @abstractmethod
-    def now(self):
+    def now(this):
         pass

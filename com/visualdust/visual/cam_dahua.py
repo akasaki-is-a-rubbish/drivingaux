@@ -3,11 +3,11 @@ from abc import ABC
 from com.visualdust.visual.camlike import Camlike
 
 class CamDahua(Camlike, ABC):
-    def __init__(self,config):
+    def __init__(this,config):
         pass
 
-    def next(self):
+    def next(this):
         pass
 
-    def now(self):
+    def now(this):
         pass

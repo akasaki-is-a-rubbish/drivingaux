@@ -5,14 +5,14 @@ from com.visualdust.serialthings.isensor import ISensor
 from utils.logger import Logger
 
 class Lidar(ISensor, ABC):
-    def __init__(self, port, name="lidar"):
-        self.lidar = RPLidar(port)
-        self.lidar.reset()
-        self._iter = self.lidar.iter_scans()
+    def __init__(this, port, name="lidar"):
+        this.lidar = RPLidar(port)
+        this.lidar.reset()
+        this._iter = this.lidar.iter_scans()
         super().__init__(name)
-        self.logger = Logger(name)
-        self.logger.log("Lidar initialized.")
+        this.logger = Logger(name)
+        this.logger.log("Lidar initialized.")
 
-    def _read(self):
-        return self._iter.__next__()
+    def _read(this):
+        return this._iter.__next__()
 
