@@ -30,14 +30,17 @@ async def websocket_serve():
         logger.log("Websocket client connected.")
         try:
             while True:
-                await websocket.send(json.dumps(hub.values))
-                await asyncio.sleep(0.1)
+                updates = await hub.get_updates()
+                obj = {}
+                for name, val in updates:
+                    obj[name] = val
+                await websocket.send(json.dumps(obj))
         except:
             logger.log("Websocket client disconnected.")
 
     while len(hub.values.keys()) == 0:
         await asyncio.sleep(0.1)
-    logger.log("Sensor values ready. Starting to serve at: 0.0.0.0:8765")
+    logger.log("Sensor values ready.")
     await websockets.serve(client_handler, "0.0.0.0", 8765)
 
 

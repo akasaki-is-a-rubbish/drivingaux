@@ -1,6 +1,4 @@
 *.pth
 __pycache__
-<<<<<<< HEAD
 .vscode
-=======
->>>>>>> 88a8a96 (ignore __pycache__)
+*.avi

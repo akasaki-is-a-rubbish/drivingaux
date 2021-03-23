@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from threading import Thread
-from asyncio import Event
+from utils.asynchelper import Queue, run_in_event_loop
 from serial import Serial
 
 
@@ -10,7 +10,7 @@ class ISensor:
         this.name = name
         this.current = {}
         this.loop = False
-        this.event_read = Event() # FIXME: asyncio.Event is not thread-safe
+        this.queue = Queue(1)
         if autostart:
             this.thread.start()
 
@@ -20,8 +20,8 @@ class ISensor:
         this.loop = True
         while this.loop:
             this.current = this._read()
-            this.event_read.set()
-            this.event_read.clear()
+            run_in_event_loop(this.queue.put, this.current)
+
 
     @abstractmethod
     def _read(this):
