@@ -1,13 +1,13 @@
 import torch, os, cv2
-from model.model import parsingNet
-from utils.common import merge_config
-from utils.dist_utils import dist_print
+from com.cfzd.model.model import parsingNet
+from com.cfzd.utils.common import merge_config
+from com.cfzd.utils.dist_utils import dist_print
 import torch
 import scipy.special, tqdm
 import numpy as np
 import torchvision.transforms as transforms
-from data.dataset import LaneTestDataset
-from data.constant import culane_row_anchor, tusimple_row_anchor
+from com.cfzd.data.dataset import LaneTestDataset
+from com.cfzd.data.constant import culane_row_anchor, tusimple_row_anchor
 
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
@@ -25,7 +25,7 @@ if __name__ == "__main__":
         raise NotImplementedError
 
     net = parsingNet(pretrained=False, backbone=cfg.backbone, cls_dim=(cfg.griding_num + 1, cls_num_per_lane, 4),
-                     use_aux=False).cuda()  # we dont need auxiliary segmentation in testing
+                     use_aux=False)  # we dont need auxiliary segmentation in testing
 
     state_dict = torch.load(cfg.test_model, map_location='cpu')['model']
     compatible_state_dict = {}
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         img_w, img_h = 1640, 590
         row_anchor = culane_row_anchor
     elif cfg.dataset == 'Tusimple':
-        splits = ['Thz_test.txt']
+        splits = ['test.txt']
         datasets = [LaneTestDataset(cfg.data_root, os.path.join(cfg.data_root, split), img_transform=img_transforms) for
                     split in splits]
         img_w, img_h = 1280, 720
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         vout = cv2.VideoWriter(split[:-3] + 'avi', fourcc, 30.0, (img_w, img_h))
         for i, data in enumerate(tqdm.tqdm(loader)):
             imgs, names = data
-            imgs = imgs.cuda()
+            # print(imgs.shape)
             with torch.no_grad():
                 out = net(imgs)
 

@@ -1,6 +1,6 @@
-from utils.loss import SoftmaxFocalLoss, ParsingRelationLoss, ParsingRelationDis
-from utils.metrics import MultiLabelAcc, AccTopk, Metric_mIoU
-from utils.dist_utils import DistSummaryWriter
+from com.cfzd.utils.loss import SoftmaxFocalLoss, ParsingRelationLoss, ParsingRelationDis
+from com.cfzd.utils.metrics import MultiLabelAcc, AccTopk, Metric_mIoU
+from com.cfzd.utils.dist_utils import DistSummaryWriter
 
 import torch
 

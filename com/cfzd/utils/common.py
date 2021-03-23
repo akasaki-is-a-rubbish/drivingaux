@@ -1,6 +1,6 @@
 import os, argparse
-from utils.dist_utils import is_main_process, dist_print, DistSummaryWriter
-from utils.config import Config
+from com.cfzd.utils.dist_utils import is_main_process, dist_print, DistSummaryWriter
+from com.cfzd.utils.config import Config
 import torch
 
 def str2bool(v):
