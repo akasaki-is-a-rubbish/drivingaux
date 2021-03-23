@@ -9,6 +9,7 @@ import torchvision.transforms as transforms
 from com.cfzd.data.dataset import LaneTestDataset
 from com.cfzd.data.constant import culane_row_anchor, tusimple_row_anchor
 from utils.logger import Logger
+from PIL import Image
 
 
 class LaneDetector:
@@ -32,15 +33,19 @@ class LaneDetector:
         this.net.load_state_dict(this.compatible_state_dict, strict=False)
         this.net.eval()
         this.logger.log("Model ready.")
-        this.preprocessing_transform = transforms.Compose([
+        this.preprocess = transforms.Compose([
             transforms.Resize((288, 800)),
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         ])
         this.logger.log("Detector ready.")
 
-    def now(this):
-        pass
-
-    def attach(this,video_source):
-        pass
+    def process(this, single):
+        if type(single) == torch.Tensor:
+            pass
+        elif type(single) == np.ndarray:
+            single = Image.fromarray(single)
+        else:
+            raise Exception(
+                f"Unresolved input type: {type(single)}. {type(torch.Tensor)} and {type(np.ndarray)} are allowed.")
+        return this.net(torch.reshape(torch.unsqueeze(this.preprocess(single), -1), (1, 3, 288, 800)))

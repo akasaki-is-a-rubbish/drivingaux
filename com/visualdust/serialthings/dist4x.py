@@ -2,14 +2,16 @@ from abc import ABC
 from random import random
 
 from isensor import *
-
+from utils.logger import Logger
 
 class Dist4x(ISensor, ABC):
     def __init__(this, port, baudrate, name=None):
         if name is None:
             name = "Sensor#" + str(random())
+        this.logger = Logger(this)
         this.serial = Serial(port, baudrate=baudrate, timeout=10)
         super(Dist4x, this).__init__(name)
+        this.logger.log("ready.")
 
     def _read(this) -> dict:
         while this.serial.read().hex() != 'ff':
