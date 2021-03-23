@@ -1,5 +1,6 @@
 from abc import ABC
 from random import random
+from struct import unpack
 
 from isensor import *
 from utils.logger import Logger
@@ -14,22 +15,12 @@ class Dist4x(ISensor, ABC):
         this.logger.log("ready.")
 
     def _read(this) -> dict:
-        while this.serial.read().hex() != 'ff':
+        while this.serial.read()[0] != 0xff:
             pass
-        varry = []
-        for counter in range(8):
-            varry.append(this.serial.read().hex())
-        # print(varry)
-        sensor_value = []
-        sensor_value.append(int(varry[0], 16) * 256 + int(varry[1], 16))
-        sensor_value.append(int(varry[2], 16) * 256 + int(varry[3], 16))
-        sensor_value.append(int(varry[4], 16) * 256 + int(varry[5], 16))
-        sensor_value.append(int(varry[6], 16) * 256 + int(varry[7], 16))
-        sum = 0xff
-        for element in varry:
-            sum += int(element, 16)
-        if sum & 0xff == int(this.serial.read().hex(), 16):
-            # print("Sensor value : ", sensor_value)
+        buf = this.serial.read(8)
+        sensor_value = unpack('>4H', buf) # decode as four 16-bit unsigned integers
+        checksum = 0xff + sum(buf)
+        if (checksum & 0xff) == this.serial.read()[0]:
             return {
                 "s1": sensor_value[0],
                 "s2": sensor_value[1],
