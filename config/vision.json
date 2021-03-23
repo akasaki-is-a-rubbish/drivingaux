@@ -8,5 +8,6 @@
   "model": "./model/culane_18.pth",
   "griding_num": 200,
   "backbone": "18",
-  "cls_num_per_lane": 18
+  "cls_num_per_lane": 18,
+  "num_lanes": 4
 }
