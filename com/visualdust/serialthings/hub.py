@@ -15,6 +15,7 @@ class Hub(object):
         self.loop = False
         self.watching = {}
         self.event_anyupdate = asyncio.Event()
+        self.values = {}
 
     def register(self, sensor):
         self.watching[sensor.name] = sensor
@@ -23,7 +24,7 @@ class Hub(object):
 
     async def run_single(self, sensor):
         while self.loop:
-            SensorValue[sensor.name] = sensor.now()
+            self.values[sensor.name] = sensor.now()
             self.event_anyupdate.set()
             self.event_anyupdate.clear()
             # await sensor.event_read.wait()
@@ -38,6 +39,3 @@ class Hub(object):
     def stop(self):
         self.loop = False
 
-
-SensorValue = {
-}

@@ -4,15 +4,15 @@ from asyncio import Event
 from serial import Serial
 
 
-class ISensor(Thread):
-    def __init__(self, name=None, autostart=True):
-        Thread.__init__(self, name=name)
+class ISensor:
+    def __init__(self, name: str, autostart=True):
+        self.thread = Thread(None, self.run, 'sensor-' + name)
         self.name = name
         self.current = {}
         self.loop = False
-        self.event_read = Event()
+        self.event_read = Event() # FIXME: asyncio.Event is not thread-safe
         if autostart:
-            self.start()
+            self.thread.start()
 
     def run(self) -> None:
         if self.loop:
@@ -27,6 +27,9 @@ class ISensor(Thread):
     def _read(self):
         # read and process data here
         pass
+    
+    def start(self):
+        self.thread.start()
 
     def stop(self):
         self.loop = False
