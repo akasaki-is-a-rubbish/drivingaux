@@ -1,3 +1,6 @@
 *.pth
 __pycache__
+<<<<<<< HEAD
 .vscode
+=======
+>>>>>>> ec8d5fb (whatever)
