@@ -12,7 +12,7 @@ class Hub(object):
             name = 'HUB-' + str(this)
         super(Hub, this).__init__()
         this.name = name
-        this.logger = Logger(name)
+        this.logger = Logger(this)
         this.loop = False
         this.watching = {}
         this.event_update = Event()

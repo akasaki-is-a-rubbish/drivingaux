@@ -10,7 +10,7 @@ class Lidar(ISensor, ABC):
         this.lidar.reset()
         this._iter = this.lidar.iter_scans()
         super().__init__(name)
-        this.logger = Logger(name)
+        this.logger = Logger(this)
         this.logger.log("Lidar initialized.")
 
     def _read(this):
