@@ -1,5 +1,6 @@
 import asyncio
 import json
+from utils.asynchelper import loop
 
 import websockets
 from com.visualdust.visual.ultra_fast_lane import LaneDetector
@@ -26,14 +27,13 @@ hub.register(Lidar("/dev/ttyUSB0", name="RPLidar"))
 async def websocket_serve():
     async def client_handler(websocket, path):
         logger.log("Websocket client connected.")
+        await websocket.send("OK")
         try:
             while True:
-                updates = await hub.get_updates()
-                obj = {}
-                for name, val in updates:
-                    obj[name] = val
-                await websocket.send(json.dumps(obj))
-        except:
+                name, val = await hub.get_update()
+                await websocket.send(json.dumps({name: val}))
+        except Exception as e:
+            raise e
             logger.log("Websocket client disconnected.")
 
     while len(hub.values.keys()) == 0:
@@ -49,7 +49,6 @@ async def main():
     asyncio.create_task(websocket_serve())
 
 
-loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 loop.run_until_complete(main())
 loop.run_forever()

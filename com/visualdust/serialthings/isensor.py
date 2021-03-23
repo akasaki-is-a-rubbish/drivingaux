@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from threading import Thread
-from utils.asynchelper import Queue, run_in_event_loop
+from utils.asynchelper import Queue, run_in_event_loop, loop
 from serial import Serial
 
 
@@ -10,9 +10,9 @@ class ISensor:
         this.name = name
         this.current = {}
         this.loop = False
-        this.queue = Queue(1)
+        this.queue = Queue(1, loop=loop)
         if autostart:
-            this.thread.start()
+            this.start()
 
     def run(this) -> None:
         if this.loop:
@@ -20,7 +20,7 @@ class ISensor:
         this.loop = True
         while this.loop:
             this.current = this._read()
-            run_in_event_loop(this.queue.put, this.current)
+            this.queue.put_threadsafe(this.current)
 
 
     @abstractmethod

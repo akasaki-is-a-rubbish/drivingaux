@@ -1,7 +1,8 @@
 from threading import Thread
 from time import sleep
 from typing import Dict
-from utils.asynchelper import Event, run_in_event_loop
+from utils.asynchelper import Event, run_in_event_loop, loop
+from asyncio import create_task
 from utils.logger import Logger
 from .isensor import ISensor
 
@@ -15,10 +16,10 @@ class Hub(object):
         this.logger = Logger(this)
         this.loop = False
         this.watching = {}
-        this.event_update = Event()
-        this.last_updates = []
+        this.event_update = Event(loop=loop)
+        this.last_update = (None, None)
         this.values = {}
-        this._clear_defered = False
+        this._clear_deferred = False
 
     def register(this, sensor):
         this.watching[sensor.name] = sensor
@@ -28,29 +29,23 @@ class Hub(object):
     async def run_single(this, sensor: ISensor):
         while this.loop:
             val = await sensor.queue.get()
-            this._add_update(sensor.name, val)
+            this._set_update(sensor.name, val)
     
-    async def get_updates(this):
+    async def get_update(this):
         await this.event_update.wait()
-        return this.last_updates.copy()
+        return this.last_update
 
-
-    def _add_update(this, name, val):
+    def _set_update(this, name, val):
         this.values[name] = val
-        this.last_updates.append((name, val))
-        if this._clear_defered == False:
-            this._clear_defered = True
-            def clear():
-                this.last_updates = []
-                this._clear_defered = False
-            run_in_event_loop(clear)
+        this.last_update = (name, val)
+        this.event_update.set_and_clear_threadsafe()
 
     def start(this) -> None:
         this.loop = True
         this.logger.log("Started to observe.")
         for key in this.watching:
             x = this.watching[key]
-            asyncio.create_task(this.run_single(this.watching[key]))
+            create_task(this.run_single(this.watching[key]))
 
     def stop(this):
         this.loop = False
