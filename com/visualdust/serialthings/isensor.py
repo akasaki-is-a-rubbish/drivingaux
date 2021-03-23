@@ -17,6 +17,7 @@ class ISensor:
     def run(this) -> None:
         if this.loop:
             print("Already running:", this)
+            return
         this.loop = True
         while this.loop:
             this.current = this._read()

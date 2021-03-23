@@ -19,14 +19,13 @@ class Hub(object):
         this.event_update = Event(loop=loop)
         this.last_update = (None, None)
         this.values = {}
-        this._clear_deferred = False
 
     def register(this, sensor):
         this.watching[sensor.name] = sensor
         this.logger.log("Attached new sensor: " + sensor.name)
         return this
 
-    async def run_single(this, sensor: ISensor):
+    async def _run_single(this, sensor: ISensor):
         while this.loop:
             val = await sensor.queue.get()
             this._set_update(sensor.name, val)
@@ -41,11 +40,13 @@ class Hub(object):
         this.event_update.set_and_clear_threadsafe()
 
     def start(this) -> None:
+        if this.loop:
+            return
         this.loop = True
         this.logger.log("Started to observe.")
         for key in this.watching:
             x = this.watching[key]
-            create_task(this.run_single(this.watching[key]))
+            create_task(this._run_single(this.watching[key]))
 
     def stop(this):
         this.loop = False
