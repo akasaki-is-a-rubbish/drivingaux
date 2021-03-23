@@ -3,6 +3,7 @@ import json
 from utils.asynchelper import loop
 
 import websockets
+from websockets.exceptions import ConnectionClosed
 from com.visualdust.visual.ultra_fast_lane import LaneDetector
 from com.visualdust.serialthings.hub import Hub
 from com.visualdust.serialthings.lidar import Lidar
@@ -32,8 +33,7 @@ async def websocket_serve():
             while True:
                 name, val = await hub.get_update()
                 await websocket.send(json.dumps({name: val}))
-        except Exception as e:
-            raise e
+        except ConnectionClosed:
             logger.log("Websocket client disconnected.")
 
     while len(hub.values.keys()) == 0:
