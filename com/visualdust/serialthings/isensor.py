@@ -23,12 +23,11 @@ class ISensor:
             this.current = this._read()
             this.queue.put_threadsafe(this.current)
 
-
     @abstractmethod
     def _read(this):
         # read and process data here
         pass
-    
+
     def start(this):
         this.thread.start()
 

@@ -40,12 +40,15 @@ class LaneDetector:
         ])
         this.logger.log("Detector ready.")
 
-    def process(this, single):
-        if type(single) == torch.Tensor:
+    def _net_auto_parse_size_for_input_(this, image):
+        if type(image) == torch.Tensor:
             pass
-        elif type(single) == np.ndarray:
-            single = Image.fromarray(single)
+        elif type(image) == np.ndarray:
+            image = Image.fromarray(image)
         else:
             raise Exception(
-                f"Unresolved input type: {type(single)}. {type(torch.Tensor)} and {type(np.ndarray)} are allowed.")
-        return this.net(torch.reshape(torch.unsqueeze(this.preprocess(single), -1), (1, 3, 288, 800)))
+                f"Unresolved input type: {type(image)}. {type(torch.Tensor)} and {type(np.ndarray)} are allowed.")
+        return this.net(torch.reshape(torch.unsqueeze(this.preprocess(image), -1), (1, 3, 288, 800)))
+
+    def _process_(this, image, return_drew_image=False):
+        pass
