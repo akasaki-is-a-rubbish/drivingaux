@@ -3,7 +3,7 @@ from time import sleep
 from typing import Dict
 from utils.asynchelper import Event, run_in_event_loop, loop
 from asyncio import create_task
-from utils.logger import Logger
+from utils.logger import *
 from .isensor import ISensor
 
 
@@ -13,7 +13,7 @@ class Hub(object):
             name = 'HUB-' + str(this)
         super(Hub, this).__init__()
         this.name = name
-        this.logger = Logger(this)
+        this.logger = Logger("Hub-" + str(this.__hash__()), ic=IconMode.block, ic_color=IconColor.green)
         this.loop = False
         this.watching = {}
         this.event_update = Event(loop=loop)
@@ -29,7 +29,7 @@ class Hub(object):
         while this.loop:
             val = await sensor.queue.get()
             this._set_update(sensor.name, val)
-    
+
     async def get_update(this):
         await this.event_update.wait()
         return this.last_update
@@ -50,4 +50,3 @@ class Hub(object):
 
     def stop(this):
         this.loop = False
-

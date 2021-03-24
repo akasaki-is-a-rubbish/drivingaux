@@ -8,13 +8,13 @@ import numpy as np
 import torchvision.transforms as transforms
 from com.cfzd.data.dataset import LaneTestDataset
 from com.cfzd.data.constant import culane_row_anchor, tusimple_row_anchor
-from utils.logger import Logger
+from utils.logger import *
 from PIL import Image
 
 
 class LaneDetector:
     def __init__(this, config):
-        this.logger = Logger(this)
+        this.logger = Logger("Detector-" + str(this.__hash__()), ic=IconMode.setting, ic_color=IconColor.cyan)
         assert config["backbone"] in \
                ['18', '34', '50', '101', '152', '50next', '101next', '50wide', '101wide']
         this.net = parsingNet(pretrained=False,

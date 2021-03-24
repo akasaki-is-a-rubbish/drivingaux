@@ -7,7 +7,7 @@ from websockets.exceptions import ConnectionClosed
 from com.visualdust.visual.ultra_fast_lane import LaneDetector
 from com.visualdust.serialthings.hub import Hub
 from com.visualdust.serialthings.lidar import Lidar
-from utils.logger import Logger
+from utils.logger import Logger, IconMode, IconColor
 from utils.util import *
 
 """
@@ -17,7 +17,7 @@ sensor_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
 vision_config = json.load(open("./config/vision.json"))
 
-logger = Logger("[\033[92m⚙\033[0m]Launcher")
+logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
 print_txt(open("./res/banner.txt"))
 logger.banner().print_os_info().banner()
 
@@ -42,14 +42,15 @@ async def websocket_serve():
                f":{websockets_config['port']}")
     await websockets.serve(client_handler, websockets_config["address"], websockets_config["port"])
 
+
 detector = LaneDetector(vision_config)
+
 
 async def main():
     hub.start()
     asyncio.create_task(websocket_serve())
 
-
+logger.log("Ready. starting to loop...")
 asyncio.set_event_loop(loop)
 loop.run_until_complete(main())
 loop.run_forever()
-
