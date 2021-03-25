@@ -23,4 +23,5 @@ class DetectService(Thread):
             out = this.detector.process(frame)
             out_converted = this.detector.convert_result(out, (frame.shape[0],frame.shape[1]))
             result: np.ndarray = draw_result_on(frame,out_converted)
-            this.data_broadcaster.set_current((result.shape[0:2], result.tobytes('C')))
+            h, w, _ = result.shape
+            this.data_broadcaster.set_current(((w, h), result.tobytes('C')))

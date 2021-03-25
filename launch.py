@@ -20,7 +20,8 @@ logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
 logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info().banner()
 
 # creating hub and register sensors
-hub = Hub.parse_config(hub_config)
+# hub = Hub.parse_config(hub_config)
+hub = Hub()
 
 # websocket server
 async def websocket_serve():
@@ -33,13 +34,16 @@ async def websocket_serve():
         tasks = TaskStreamMultiplexer([task_sensors, task_video])
         
         try:
-            which_func, result = tasks.next()
-            if which_func == task_sensors:
-                name, val = result
-                await websocket.send(json.dumps({name: val}))
-            elif which_func == task_video:
-                shape, data = result
-                print(shape, len(data))
+            while True:
+                which_func, result = await tasks.next()
+                if which_func == task_sensors:
+                    name, val = result
+                    await websocket.send(json.dumps({name: val}))
+                elif which_func == task_video:
+                    shape, data = result
+                    print(shape, len(data))
+                    await websocket.send(json.dumps({'image': {'w': shape[0], 'h': shape[1]}}))
+                    await websocket.send(data)
         except ConnectionClosed:
             logger.log("Websocket client disconnected.")
 
@@ -51,6 +55,7 @@ async def websocket_serve():
 # creating lane detector
 detector = LaneDetector(vision_config)
 service = DetectService(detector, cv2.VideoCapture(0))
+service.start()
 
 
 async def check_sensor_values():
@@ -67,8 +72,6 @@ async def main():
 
 logger.log("Ready. starting to loop...")
 # loop all
-# asyncio.set_event_loop(loop)
-# loop.run_until_complete(main())
-# loop.run_forever()
-
-service.run()
+asyncio.set_event_loop(loop)
+loop.run_until_complete(main())
+loop.run_forever()

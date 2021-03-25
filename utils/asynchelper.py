@@ -50,7 +50,7 @@ class Broadcaster(object):
         this.current = val
         this.event_update.set_and_clear_threadsafe()
 
-    async def get_next(this, val):
+    async def get_next(this):
         """Wait until the value updated and return it (called from asyncio code ONLY)"""
         await this.event_update.wait()
         return this.current
