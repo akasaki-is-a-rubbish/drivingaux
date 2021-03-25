@@ -1,10 +1,9 @@
 import torch, os
-import numpy as np
 
 import torchvision.transforms as transforms
-import com.cfzd.data.mytransforms as mytransforms
-from com.cfzd.data.constant import tusimple_row_anchor, culane_row_anchor
-from com.cfzd.data.dataset import LaneClsDataset, LaneTestDataset
+import data.com.cfzd.mytransforms as mytransforms
+from data.com.cfzd.constant import tusimple_row_anchor, culane_row_anchor
+from data.com.cfzd.dataset import LaneClsDataset, LaneTestDataset
 
 def get_train_loader(batch_size, data_root, griding_num, dataset, use_aux, distributed, num_lanes):
     target_transform = transforms.Compose([

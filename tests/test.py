@@ -2,10 +2,10 @@ import os
 
 import torch
 
-from com.cfzd.evaluation.eval_wrapper import eval_lane
-from com.cfzd.model.model import parsingNet
-from com.cfzd.utils.common import merge_config
-from com.cfzd.utils.dist_utils import dist_print
+from tests.evaluation.eval_wrapper import eval_lane
+from model.model import parsingNet
+from utils.common import merge_config
+from utils.dist_utils import dist_print
 
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True

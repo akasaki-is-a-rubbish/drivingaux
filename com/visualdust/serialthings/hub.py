@@ -5,6 +5,7 @@ from utils.asynchelper import Event, run_in_event_loop, loop
 from asyncio import create_task
 from utils.logger import *
 from .isensor import ISensor
+from com.visualdust.serialthings.util import *
 
 
 class Hub(object):
@@ -50,3 +51,9 @@ class Hub(object):
 
     def stop(this):
         this.loop = False
+
+    def parse_config(config):
+        hub = Hub("HUB")
+        for sensor in parse_all(config):
+            hub.register(sensor)
+        return hub

@@ -4,54 +4,21 @@ from utils.logger import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
 from com.visualdust.serialthings.lidar import Lidar
 from com.visualdust.serialthings.hub import Hub
+from com.visualdust.serialthings.util import *
 from utils.asynchelper import loop
-from utils.util import *
 import websockets
 import asyncio
 import json
 
-sensor_config = json.load(open("./config/sensor.json"))
+hub_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
 vision_config = json.load(open("./config/vision.json"))
 
 logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
-print_txt(open("./res/banner.txt"))
-logger.banner().print_os_info().banner()
-
-
-def parse_dict(config, name=None):
-    if config["type"] == Dist4x.__name__:
-        return Dist4x(config["port"], config["baudrate"], name)
-    if config["type"] == Lidar.__name__:
-        return Lidar(config["port"], name)
-
-
-def parse_all(config_for_all):
-    result = []
-    for item in config_for_all:
-        result.append(parse_dict(config_for_all[item], name=item))
-    return result
-
-
-def parse_file(config_file):
-    if type(config_file) == str:
-        config_file = open(config_file)
-    configs = json.load(config_file)
-    return parse_all(configs)
-
+logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info().banner()
 
 # creating hub and register sensors
-hub = Hub("HUB")
-for sensor in parse_all(sensor_config):
-    hub.register(sensor)
-
-
-# hub.register(Lidar("/dev/ttyUSB4", name="RPLidar")) \
-#     .register(Dist4x("/dev/ttyUSB0", 9600, name="dist4x_0")) \
-#     .register(Dist4x("/dev/ttyUSB1", 9600, name="dist4x_1")) \
-#     .register(Dist4x("/dev/ttyUSB2", 9600, name="dist4x_2")) \
-#     .register(Dist4x("/dev/ttyUSB3", 9600, name="dist4x_3")) \
-#     # hub.register(Dist4x("/dev/ttyUSB0", 9600, name="dist4x_1"))
+hub = Hub.parse_config(hub_config)
 
 # websocket server
 async def websocket_serve():

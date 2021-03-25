@@ -1,13 +1,13 @@
-import torch, os, cv2
-from com.cfzd.model.model import parsingNet
-from com.cfzd.utils.common import merge_config
-from com.cfzd.utils.dist_utils import dist_print
+import os, cv2
+from model.model import parsingNet
+from utils.common import merge_config
+from utils.dist_utils import dist_print
 import torch
 import scipy.special, tqdm
 import numpy as np
 import torchvision.transforms as transforms
-from com.cfzd.data.dataset import LaneTestDataset
-from com.cfzd.data.constant import culane_row_anchor, tusimple_row_anchor
+from data.com.cfzd.dataset import LaneTestDataset
+from data.com.cfzd.constant import culane_row_anchor, tusimple_row_anchor
 
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True

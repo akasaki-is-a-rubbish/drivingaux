@@ -3,8 +3,7 @@ from PIL import Image
 import os
 import pdb
 import numpy as np
-import cv2
-from com.cfzd.data.mytransforms import find_start_pos
+from data.com.cfzd.mytransforms import find_start_pos
 
 
 def loader_func(path):

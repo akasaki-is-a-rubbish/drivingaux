@@ -4,6 +4,7 @@ import platform
 from datetime import datetime
 from termcolor import colored
 from enum import Enum
+import six
 
 
 class Logger:
@@ -44,6 +45,15 @@ class Logger:
         print('\n' * line_cnt)
         return this
 
+    def print_txt_file(this, file):
+        if isinstance(file, six.string_types):
+            file = open(file)
+        str = ''
+        for line in file.readlines():
+            str += line
+        print(str)
+        return this
+
 
 class IconMode(Enum):
     setting = "⚙"
@@ -65,6 +75,7 @@ class IconMode(Enum):
     up = "⇑"
     right = "⇒"
     down = "⇓"
+    left_right = "↹"
 
 
 class IconColor(Enum):

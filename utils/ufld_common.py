@@ -1,6 +1,6 @@
-import os, argparse
-from com.cfzd.utils.dist_utils import is_main_process, dist_print, DistSummaryWriter
-from com.cfzd.utils.config import Config
+import argparse
+from utils.dist_utils import is_main_process, dist_print, DistSummaryWriter
+from utils.config import Config
 import torch
 
 def str2bool(v):
@@ -77,7 +77,7 @@ def cp_projects(to_path):
             ign = fp.read()
         ign += '\n.git'
         spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, ign.splitlines())
-        all_files = {os.path.join(root,name) for root,dirs,files in os.walk('./') for name in files}
+        all_files = {os.path.join(root,name) for root,dirs,files in os.walk('../com/cfzd/utils/') for name in files}
         matches = spec.match_files(all_files)
         matches = set(matches)
         to_cp_files = all_files - matches

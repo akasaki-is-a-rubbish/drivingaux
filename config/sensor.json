@@ -1,5 +1,5 @@
 {
-  "lidar": {
+  "main-lidar": {
     "port": "/dev/ttyUSB4",
     "type" : "Lidar"
   },
