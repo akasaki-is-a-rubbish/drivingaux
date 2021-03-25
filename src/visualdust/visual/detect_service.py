@@ -19,6 +19,9 @@ class DetectService(Thread):
 
     def run(this) -> None:
         while True:
+            this.video_capture.read()
+            this.video_capture.read()
+            this.video_capture.read()
             ret, frame = this.video_capture.read()
             out = this.detector.process(frame)
             out_converted = this.detector.convert_result(out, (frame.shape[0],frame.shape[1]))

@@ -5,6 +5,7 @@ from utils.logger import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
 from src.visualdust.serialthings.lidar import Lidar
 from src.visualdust.serialthings.hub import Hub
+from src import frontend_server
 from src.visualdust.serialthings.util import *
 from utils.asynchelper import loop, TaskStreamMultiplexer
 import websockets
@@ -23,38 +24,9 @@ logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info()
 # hub = Hub.parse_config(hub_config)
 hub = Hub()
 
-# websocket server
-async def websocket_serve():
-    async def client_handler(websocket, path):
-        logger.log("Websocket client connected.")
-
-        task_sensors = lambda: hub.get_update()
-        task_video = lambda: service.data_broadcaster.get_next()
-
-        tasks = TaskStreamMultiplexer([task_sensors, task_video])
-        
-        try:
-            while True:
-                which_func, result = await tasks.next()
-                if which_func == task_sensors:
-                    name, val = result
-                    await websocket.send(json.dumps({name: val}))
-                elif which_func == task_video:
-                    shape, data = result
-                    print(shape, len(data))
-                    await websocket.send(json.dumps({'image': {'w': shape[0], 'h': shape[1]}}))
-                    await websocket.send(data)
-        except ConnectionClosed:
-            logger.log("Websocket client disconnected.")
-
-    logger.log(f"Websocket serves at: {websockets_config['address']}"
-               f":{websockets_config['port']}")
-    await websockets.serve(client_handler, websockets_config["address"], websockets_config["port"])
-
-
 # creating lane detector
 detector = LaneDetector(vision_config)
-service = DetectService(detector, cv2.VideoCapture(0))
+service = DetectService(detector, cv2.VideoCapture(2))
 service.start()
 
 
@@ -66,7 +38,7 @@ async def check_sensor_values():
 # creating main task
 async def main():
     hub.start()
-    asyncio.create_task(websocket_serve())
+    asyncio.create_task(frontend_server.websocket_serve(hub, service, websockets_config))
     asyncio.create_task(check_sensor_values())
 
 
