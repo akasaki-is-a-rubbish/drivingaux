@@ -38,7 +38,7 @@ class LaneDetector:
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         ])
         this.logger.log("Detector ready.")
-        this.raw_anchor = [121, 131, 141, 150, 160, 170, 180, 189, 199, 209, 219, 228, 238, 248, 258, 267,
+        this.row_anchor = [121, 131, 141, 150, 160, 170, 180, 189, 199, 209, 219, 228, 238, 248, 258, 267,
                            277, 287]
         this.cls_num_per_lane = config["cls_num_per_lane"]
         col_sample = np.linspace(0, 800 - 1, this.griding_num)
@@ -74,10 +74,6 @@ class LaneDetector:
                 for k in range(out_j.shape[0]):
                     if out_j[k, i] > 0:
                         target_pos.append((int(out_j[k, i] * this.col_sample_w * img_w / size_processed[1]) - 1,
-                                           int(img_h * (this.detector.row_anchor[this.cls_num_per_lane - 1 - k] /
+                                           int(img_h * (this.row_anchor[this.cls_num_per_lane - 1 - k] /
                                                         size_processed[0])) - 1))
         return target_pos
-
-    def draw_result_on(image, target_pos):
-        for pos in target_pos:
-            cv2.circle(image, pos, 5, (0, 255, 0), -1)

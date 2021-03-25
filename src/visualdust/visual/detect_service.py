@@ -13,13 +13,9 @@ class DetectService(Thread):
         this.detector = lane_detector
         this.video_capture = video_capture
 
-
-def start(this) -> None:
-    while True:
-        ret, frame = this.video_capture.read()
-        img_w = frame.shape[1]
-        img_h = frame.shape[0]
-
-        out = this.detector.process(frame)
-
-
+    def start(this) -> None:
+        while True:
+            ret, frame = this.video_capture.read()
+            out = this.detector.process(frame)
+            out_converted = this.detector.convert_result(out, frame.shape)
+            # todo what todo
