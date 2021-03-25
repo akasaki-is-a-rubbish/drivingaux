@@ -1,4 +1,5 @@
 from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from src.visualdust.visual.detect_service import DetectService
 from src.visualdust.serialthings.dist4x import Dist4x
 from utils.logger import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
@@ -34,7 +35,7 @@ async def websocket_serve():
 
     while len(hub.values.keys()) == 0:
         await asyncio.sleep(0.3)
-    logger.log(f"Websocket started to serve at: {websockets_config['address']}"
+    logger.log(f"Websocket serves at: {websockets_config['address']}"
                f":{websockets_config['port']}")
     await websockets.serve(client_handler, websockets_config["address"], websockets_config["port"])
 
@@ -51,6 +52,6 @@ async def main():
 
 logger.log("Ready. starting to loop...")
 # loop all
-asyncio.set_event_loop(loop)
-loop.run_until_complete(main())
-loop.run_forever()
+# asyncio.set_event_loop(loop)
+# loop.run_until_complete(main())
+# loop.run_forever()

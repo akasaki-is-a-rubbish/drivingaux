@@ -1,4 +1,5 @@
 from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from utils.ufld_common import draw_result_on
 from utils.logger import *
 from threading import Thread
 import scipy.special
@@ -17,5 +18,6 @@ class DetectService(Thread):
         while True:
             ret, frame = this.video_capture.read()
             out = this.detector.process(frame)
-            out_converted = this.detector.convert_result(out, frame.shape)
+            out_converted = this.detector.convert_result(out, (frame.shape[0],frame.shape[1]))
+            result = draw_result_on(frame,out_converted)
             # todo what todo

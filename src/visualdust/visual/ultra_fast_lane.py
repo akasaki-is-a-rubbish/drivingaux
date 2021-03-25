@@ -45,9 +45,7 @@ class LaneDetector:
         this.col_sample_w = col_sample[1] - col_sample[0]
 
     def process(this, image):
-        if type(image) == torch.Tensor:
-            pass
-        elif type(image) == np.ndarray:
+        if type(image) == np.ndarray:
             image = Image.fromarray(image)
         else:
             raise Exception(
@@ -55,8 +53,8 @@ class LaneDetector:
         return this.net(torch.reshape(torch.unsqueeze(this.preprocess(image), -1), (1, 3, 288, 800)))
 
     def convert_result(this, out, size_origin, size_processed=(288, 800)):
-        img_h = size_origin.shape[0]
-        img_w = size_origin.shape[1]
+        img_h = size_origin[0]
+        img_w = size_origin[1]
 
         out_j = out[0].data.cpu().numpy()
         out_j = out_j[:, ::-1, :]

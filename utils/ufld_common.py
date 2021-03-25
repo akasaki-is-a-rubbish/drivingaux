@@ -1,7 +1,8 @@
 import argparse
 from utils.dist_utils import is_main_process, dist_print, DistSummaryWriter
-from utils.config import Config
+from utils.ufld_config import Config
 import torch
+import cv2
 
 
 def str2bool(v):
@@ -118,3 +119,4 @@ def get_logger(work_dir, cfg):
 def draw_result_on(image, target_pos):
     for pos in target_pos:
         cv2.circle(image, pos, 5, (0, 255, 0), -1)
+    return image
