@@ -10,7 +10,7 @@ class ISensor:
         this.name = name
         this.current = {}
         this.loop = False
-        this.queue = Queue(1, loop=loop)
+        this.queue = Queue(1)
         if autostart:
             this.start()
 

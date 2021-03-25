@@ -6,10 +6,11 @@ from websockets.exceptions import ConnectionClosed
 from src.visualdust.serialthings.lidar import Lidar
 from src.visualdust.serialthings.hub import Hub
 from src.visualdust.serialthings.util import *
-from utils.asynchelper import loop
+from utils.asynchelper import loop, TaskStreamMultiplexer
 import websockets
 import asyncio
 import json
+import cv2
 
 hub_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
@@ -25,16 +26,23 @@ hub = Hub.parse_config(hub_config)
 async def websocket_serve():
     async def client_handler(websocket, path):
         logger.log("Websocket client connected.")
-        await websocket.send("OK")
+
+        task_sensors = lambda: hub.get_update()
+        task_video = lambda: service.data_broadcaster.get_next()
+
+        tasks = TaskStreamMultiplexer([task_sensors, task_video])
+        
         try:
-            while True:
-                name, val = await hub.get_update()
+            which_func, result = tasks.next()
+            if which_func == task_sensors:
+                name, val = result
                 await websocket.send(json.dumps({name: val}))
+            elif which_func == task_video:
+                shape, data = result
+                print(shape, len(data))
         except ConnectionClosed:
             logger.log("Websocket client disconnected.")
 
-    while len(hub.values.keys()) == 0:
-        await asyncio.sleep(0.3)
     logger.log(f"Websocket serves at: {websockets_config['address']}"
                f":{websockets_config['port']}")
     await websockets.serve(client_handler, websockets_config["address"], websockets_config["port"])
@@ -42,12 +50,19 @@ async def websocket_serve():
 
 # creating lane detector
 detector = LaneDetector(vision_config)
+service = DetectService(detector, cv2.VideoCapture(0))
 
+
+async def check_sensor_values():
+    while len(hub.values.keys()) == 0:
+        await hub.event_update.wait()
+    logger.log(f"Sensor values ready")
 
 # creating main task
 async def main():
     hub.start()
     asyncio.create_task(websocket_serve())
+    asyncio.create_task(check_sensor_values())
 
 
 logger.log("Ready. starting to loop...")
@@ -55,3 +70,5 @@ logger.log("Ready. starting to loop...")
 # asyncio.set_event_loop(loop)
 # loop.run_until_complete(main())
 # loop.run_forever()
+
+service.run()

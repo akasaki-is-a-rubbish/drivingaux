@@ -17,7 +17,7 @@ class Hub(object):
         this.logger = Logger("Hub-" + str(this.__hash__()), ic=IconMode.block, ic_color=IconColor.green)
         this.loop = False
         this.watching = {}
-        this.event_update = Event(loop=loop)
+        this.event_update = Event()
         this.last_update = (None, None)
         this.values = {}
 
