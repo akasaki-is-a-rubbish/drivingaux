@@ -1,6 +1,6 @@
 import json
-from com.visualdust.serialthings.dist4x import Dist4x
-from com.visualdust.serialthings.lidar import Lidar
+from src.visualdust.serialthings.dist4x import Dist4x
+from src.visualdust.serialthings.lidar import Lidar
 
 def parse_dict(config, name=None):
     if config["type"] == Dist4x.__name__:

@@ -1,10 +1,10 @@
-from com.visualdust.visual.ultra_fast_lane import LaneDetector
-from com.visualdust.serialthings.dist4x import Dist4x
+from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from src.visualdust.serialthings.dist4x import Dist4x
 from utils.logger import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
-from com.visualdust.serialthings.lidar import Lidar
-from com.visualdust.serialthings.hub import Hub
-from com.visualdust.serialthings.util import *
+from src.visualdust.serialthings.lidar import Lidar
+from src.visualdust.serialthings.hub import Hub
+from src.visualdust.serialthings.util import *
 from utils.asynchelper import loop
 import websockets
 import asyncio

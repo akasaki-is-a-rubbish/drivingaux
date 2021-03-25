@@ -2,7 +2,7 @@ from abc import ABC
 from random import random
 from struct import unpack
 
-from com.visualdust.serialthings.isensor import *
+from src.visualdust.serialthings.isensor import *
 from utils.logger import *
 
 

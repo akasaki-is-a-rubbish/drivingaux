@@ -1,6 +1,6 @@
 from abc import ABC
 
-from com.visualdust.visual.camlike import Camlike
+from src.visualdust.visual.camlike import Camlike
 
 class CamDahua(Camlike, ABC):
     def __init__(this,config):

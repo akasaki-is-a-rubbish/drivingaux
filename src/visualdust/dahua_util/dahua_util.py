@@ -9,7 +9,7 @@ Created on 2017-10-25
 import cv2
 import numpy
 
-from com.dahua.ImageConvert import *
+from src.dahua.ImageConvert import *
 from .dahua_config import *
 
 g_cameraStatusUserInfo = b"statusInfo"

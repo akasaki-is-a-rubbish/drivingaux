@@ -1,7 +1,7 @@
 from abc import ABC
 
 from rplidar import RPLidar
-from com.visualdust.serialthings.isensor import ISensor
+from src.visualdust.serialthings.isensor import ISensor
 from utils.logger import *
 
 

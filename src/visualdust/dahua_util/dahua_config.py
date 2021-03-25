@@ -1,4 +1,4 @@
-from com.dahua.MVSDK import *
+from src.dahua.MVSDK import *
 
 
 def set_brightness(camera, value):

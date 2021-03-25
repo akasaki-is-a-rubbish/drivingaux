@@ -1,4 +1,4 @@
-from com.visualdust.visual.ultra_fast_lane import LaneDetector
+from src.visualdust.visual.ultra_fast_lane import LaneDetector
 from utils.logger import *
 
 
