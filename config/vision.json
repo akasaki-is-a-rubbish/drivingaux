@@ -1,13 +1,10 @@
 {
-  "camera": "/dev/video0",
+  "video_capture": "0",
   "reshape": true,
-  "input_width": 1920,
-  "input_height": 1080,
-  "reshape_width": 800,
-  "reshape_height": 288,
   "model": "./model/culane_18.pth",
   "griding_num": 200,
   "backbone": "18",
   "cls_num_per_lane": 18,
-  "num_lanes": 4
+  "num_lanes": 4,
+  "cpu_only": true
 }

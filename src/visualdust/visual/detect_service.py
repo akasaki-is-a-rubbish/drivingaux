@@ -10,12 +10,12 @@ import numpy as np
 class DetectService(Thread):
     def __init__(this, lane_detector, video_capture, name="DetectService"):
         Thread.__init__(this)
-        cls_num_per_lane = 18
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
         this.detector = lane_detector
         this.video_capture = video_capture
         this.data_broadcaster = Broadcaster()
+        this.logger.log("Ready.")
 
     def run(this) -> None:
         while True:

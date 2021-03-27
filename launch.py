@@ -21,12 +21,11 @@ logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
 logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info().banner()
 
 # creating hub and register sensors
-# hub = Hub.parse_config(hub_config)
-hub = Hub()
+hub = Hub.parse_config(hub_config)
 
 # creating lane detector
 detector = LaneDetector(vision_config)
-service = DetectService(detector, cv2.VideoCapture(2))
+service = DetectService(detector, cv2.VideoCapture(0))
 service.start()
 
 
@@ -37,6 +36,7 @@ async def check_sensor_values():
 
 # creating main task
 async def main():
+    pass
     hub.start()
     asyncio.create_task(frontend_server.websocket_serve(hub, service, websockets_config))
     asyncio.create_task(check_sensor_values())
