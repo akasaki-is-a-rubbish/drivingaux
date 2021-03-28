@@ -16,6 +16,7 @@ class LaneDetectService(Thread):
         this.capture_thread = capture_thread
         this.capture_name = capture_name
         this.data_broadcaster = Broadcaster()
+        this.current = []
         this.logger.log("Ready.")
 
     def run(this) -> None:
@@ -23,9 +24,13 @@ class LaneDetectService(Thread):
             ret, frame = this.capture_thread.now(this.capture_name)
             out = this.detector.process(frame)
             out_converted = this.detector.convert_result(out, (frame.shape[0], frame.shape[1]))
+            this.current = out_converted
             result: np.ndarray = draw_result_on(frame, out_converted)
             h, w, _ = result.shape
             this.data_broadcaster.set_current(((w, h), result.tobytes('C')))
+
+    def now(this):
+        return this.current
 
 
 class TargetDetectService(Thread):
