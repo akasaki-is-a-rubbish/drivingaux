@@ -3,7 +3,7 @@ from random import random
 from struct import unpack
 
 from src.visualdust.serialthings.isensor import *
-from utils.logger import *
+from utils.logging import *
 
 
 class Dist4x(ISensor, ABC):

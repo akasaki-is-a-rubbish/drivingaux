@@ -5,7 +5,7 @@ import torch
 import numpy as np
 import torchvision.transforms as transforms
 import scipy.special
-from utils.logger import *
+from utils.logging import *
 from PIL import Image
 
 

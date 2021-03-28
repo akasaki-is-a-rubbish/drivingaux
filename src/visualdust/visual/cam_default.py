@@ -1,5 +1,5 @@
 from src.visualdust.visual.camlike import Camlike
-from utils.logger import Logger
+from utils.logging import Logger
 
 class Camera(Camlike):
     def __init__(this,device):

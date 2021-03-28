@@ -3,7 +3,7 @@ from time import sleep
 from typing import Dict
 from utils.asynchelper import Event, run_in_event_loop, loop
 from asyncio import create_task
-from utils.logger import *
+from utils.logging import *
 from .isensor import ISensor
 from src.visualdust.serialthings.util import *
 

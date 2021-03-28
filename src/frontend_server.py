@@ -1,7 +1,7 @@
 from src.visualdust.visual.ultra_fast_lane import LaneDetector
-from src.visualdust.visual.detect_service import DetectService
+from src.visualdust.visual.detect_service import LaneDetectService
 from src.visualdust.serialthings.dist4x import Dist4x
-from utils.logger import Logger, IconMode, IconColor
+from utils.logging import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
 from src.visualdust.serialthings.lidar import Lidar
 from src.visualdust.serialthings.hub import Hub

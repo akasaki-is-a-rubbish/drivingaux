@@ -2,7 +2,7 @@ from abc import ABC
 
 from rplidar import RPLidar
 from src.visualdust.serialthings.isensor import ISensor
-from utils.logger import *
+from utils.logging import *
 
 
 class Lidar(ISensor, ABC):
