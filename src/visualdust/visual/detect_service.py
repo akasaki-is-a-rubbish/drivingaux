@@ -25,9 +25,7 @@ class LaneDetectService(Thread):
             out = this.detector.process(frame)
             out_converted = this.detector.convert_result(out, (frame.shape[0], frame.shape[1]))
             this.current = out_converted
-            result: np.ndarray = draw_result_on(frame, out_converted)
-            h, w, _ = result.shape
-            this.data_broadcaster.set_current(((w, h), result.tobytes('C')))
+            this.data_broadcaster.set_current(out_converted)
 
     def now(this):
         return this.current

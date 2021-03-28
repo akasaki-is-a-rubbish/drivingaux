@@ -24,12 +24,13 @@ logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info()
 # creating hub and register sensors
 hub = Hub.parse_config(hub_config)
 # creating capture thread none blocking
-camera_thread = CameraThreadoo()
-camera_thread.register(cv2.VideoCapture(0), "fronting")
+camera_service = CameraThreadoo()
+camera_service.register(cv2.VideoCapture(0), "fronting")
+camera_service.start()
 
 # creating lane detector
 detector = LaneDetector(vision_config)
-lane_detect_service = LaneDetectService(detector, camera_thread, "fronting")
+lane_detect_service = LaneDetectService(detector, camera_service, "fronting")
 lane_detect_service.start()
 
 async def check_sensor_values():
