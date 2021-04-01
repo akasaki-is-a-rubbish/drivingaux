@@ -1,15 +1,13 @@
+from src.visualdust.visual.detect_service import LaneDetectService
+from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from utils.logging import Logger, IconMode, IconColor
+from src.visualdust.serialthings.hub import Hub
+from utils.asynchelper import loop
+from src.backend import socketo
 import asyncio
 import json
-
 import cv2
-
-from src.backend import frontend_server
-from src.visualdust.serialthings.hub import Hub
-from src.visualdust.visual.cam_noneblocking import CameraThreadoo
-from src.visualdust.visual.detect_service import LaneDetectService
-from src.visualdust.visual.ultra_fast_lane import LaneDetector
-from utils.asynchelper import loop
-from utils.logging import Logger, IconMode, IconColor
 
 hub_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
@@ -41,7 +39,7 @@ async def check_sensor_values():
 async def main():
     pass
     hub.start()
-    asyncio.create_task(frontend_server.websocket_serve(hub, lane_detect_service, camera_service, websockets_config))
+    asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, websockets_config))
     asyncio.create_task(check_sensor_values())
 
 
