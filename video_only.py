@@ -1,10 +1,12 @@
-from src.visualdust.visual.ultra_fast_lane import LaneDetector
-from src.visualdust.visual.detect_service import LaneDetectService
-from src.visualdust.visual.cam_noneblocking import CameraThreadoo
-from utils.logging import Logger, IconMode, IconColor
-from time import sleep
 import json
+from time import sleep
+
 import cv2
+
+from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.visualdust.visual.detect_service import LaneDetectService
+from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from utils.logging import Logger, IconMode, IconColor
 
 vision_config = json.load(open("./config/vision.json"))
 
@@ -13,8 +15,7 @@ logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info()
 
 # creating capture thread none blocking
 camera_service = CameraThreadoo()
-camera_service.register(cv2.VideoCapture("/home/visualdust/Videos/4K Scenic Byway 12 _ All American Road in Utah, USA - 5 Hour of Road Drive with Relaxing Music-ZOZOqbK86t0.webm"),
-                        "fronting")
+camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), "fronting", True)
 camera_service.start()
 
 # creating lane detector

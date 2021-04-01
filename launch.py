@@ -1,14 +1,15 @@
-from src.visualdust.visual.ultra_fast_lane import LaneDetector
-from src.visualdust.visual.detect_service import LaneDetectService
-from src.visualdust.visual.cam_noneblocking import CameraThreadoo
-from utils.logging import Logger, IconMode, IconColor
-
-from src.visualdust.serialthings.hub import Hub
-from src.backend import frontend_server
-from utils.asynchelper import loop
 import asyncio
 import json
+
 import cv2
+
+from src.backend import frontend_server
+from src.visualdust.serialthings.hub import Hub
+from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.visualdust.visual.detect_service import LaneDetectService
+from src.visualdust.visual.ultra_fast_lane import LaneDetector
+from utils.asynchelper import loop
+from utils.logging import Logger, IconMode, IconColor
 
 hub_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
@@ -21,13 +22,14 @@ logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info()
 hub = Hub.parse_config(hub_config)
 # creating capture thread none blocking
 camera_service = CameraThreadoo()
-camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), "fronting")
+camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), "fronting", True)
 camera_service.start()
 
 # creating lane detector
 detector = LaneDetector(vision_config)
 lane_detect_service = LaneDetectService(detector, camera_service, "fronting")
 lane_detect_service.start()
+
 
 async def check_sensor_values():
     while len(hub.values.keys()) == 0:

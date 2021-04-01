@@ -1,9 +1,11 @@
 from threading import Thread
-from utils.logging import *
 from time import sleep
-from utils.asynchelper import *
 from typing import Dict
+
 import cv2
+
+from utils.asynchelper import *
+from utils.logging import *
 
 
 class CameraThreadoo(Thread):
@@ -13,17 +15,22 @@ class CameraThreadoo(Thread):
     def __init__(this, name="CamNoneBlocking"):
         Thread.__init__(this)
         this.name = name
-        this.logger = Logger(name,ic=IconMode.star_filled,ic_color=IconColor.red)
+        this.logger = Logger(name, ic=IconMode.star_filled, ic_color=IconColor.red)
         this.cams = {}
         this.frames_broadcaster = {}
         this.delay = 0.03
         this.logger.log("Ready.")
 
-    def register(this, video_capture, name):
+    def register(this, video_capture: cv2.VideoCapture, name, wait_for_frame_ready=False):
         assert name is not None
         this.frames_broadcaster[name] = Broadcaster()
         this.cams[name] = video_capture
         this.logger.log(f"New video capture registered: {name}")
+        if wait_for_frame_ready:
+            this.logger.log(f"Waiting for capture({name})...")
+            while video_capture.read() is None:
+                sleep(0.1)
+            this.logger.log(f"Capture({name}) ready.")
 
     def run(this) -> None:
         while True:
