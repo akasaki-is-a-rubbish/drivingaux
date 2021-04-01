@@ -10,7 +10,7 @@ class Dist4x(ISensor, ABC):
     def __init__(this, port, baudrate, name=None):
         if name is None:
             name = "Dist4x-" + str(random())
-        this.logger = Logger(f"Dist4x-{name}", ic=IconMode.left_right, ic_color=IconColor.red)
+        this.logger = Logger(f"Dist4x-{name}", ic=IconMode.left_right, ic_color=IconColor.yellow)
         this.serial = Serial(port, baudrate=baudrate, timeout=10)
         super(Dist4x, this).__init__(name)
         this.logger.log("ready.")

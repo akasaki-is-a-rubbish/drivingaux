@@ -1,12 +1,11 @@
-import cv2
+import numpy as np
+import scipy.special
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
 
 from model.model import parsingNet
-import torch
-import numpy as np
-import torchvision.transforms as transforms
-import scipy.special
 from utils.logging import *
-from PIL import Image
 
 
 class LaneDetector:
@@ -20,16 +19,21 @@ class LaneDetector:
                               cls_dim=(config["griding_num"] + 1,
                                        config["cls_num_per_lane"], 4),
                               use_aux=False)
+        if "with_gpu" in config and config["with_gpu"]:
+            this.with_gpu = True
+            this.net = this.net.cuda()
+        else:
+            this.with_gpu = False
         this.griding_num = config["griding_num"]
         this.logger.log("Loading model...")
-        this.state_dict = torch.load(config["model"], map_location='cpu')['model']
-        this.compatible_state_dict = {}
-        for k, v in this.state_dict.items():
+        state_dict = torch.load(config["model"], map_location='cpu')['model']
+        compatible_state_dict = {}
+        for k, v in state_dict.items():
             if 'module.' in k:
-                this.compatible_state_dict[k[7:]] = v
+                compatible_state_dict[k[7:]] = v
             else:
-                this.compatible_state_dict[k] = v
-        this.net.load_state_dict(this.compatible_state_dict, strict=False)
+                compatible_state_dict[k] = v
+        this.net.load_state_dict(compatible_state_dict, strict=False)
         this.net.eval()
         this.logger.log("Model ready.")
         this.preprocess = transforms.Compose([
@@ -50,7 +54,10 @@ class LaneDetector:
         else:
             raise Exception(
                 f"Unresolved input type: {type(image)}. {type(torch.Tensor)} and {type(np.ndarray)} are allowed.")
-        return this.net(torch.reshape(torch.unsqueeze(this.preprocess(image), -1), (1, 3, 288, 800)))
+        image = torch.reshape(torch.unsqueeze(this.preprocess(image), -1), (1, 3, 288, 800))
+        if this.with_gpu:
+            image = image.cuda()
+        return this.net(image)
 
     def convert_result(this, out, size_origin, size_processed=(288, 800)):
         img_h = size_origin[0]

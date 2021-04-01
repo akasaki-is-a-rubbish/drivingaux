@@ -2,6 +2,7 @@ import json
 from src.visualdust.serialthings.dist4x import Dist4x
 from src.visualdust.serialthings.lidar import Lidar
 
+
 def parse_dict(config, name=None):
     if config["type"] == Dist4x.__name__:
         return Dist4x(config["port"], config["baudrate"], name)
@@ -12,6 +13,8 @@ def parse_dict(config, name=None):
 def parse_all(config_for_all):
     result = []
     for item in config_for_all:
+        if "ignored" in config_for_all[item] and config_for_all[item]["ignored"]:
+            continue
         result.append(parse_dict(config_for_all[item], name=item))
     return result
 

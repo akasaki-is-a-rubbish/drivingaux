@@ -1,10 +1,10 @@
 {
-  "video_capture": "0",
+  "video_capture": "/home/visualdust/workspace/服创/video/ch120210127141826-20210127151358.avi",
   "reshape": true,
   "model": "./model/culane_18.pth",
   "griding_num": 200,
   "backbone": "18",
   "cls_num_per_lane": 18,
   "num_lanes": 4,
-  "cpu_only": true
+  "with_gpu": false
 }

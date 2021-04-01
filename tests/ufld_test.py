@@ -4,7 +4,7 @@ import torch
 
 from tests.evaluation.eval_wrapper import eval_lane
 from model.model import parsingNet
-from utils.common import merge_config
+from utils.ufld_common import merge_config
 from utils.dist_utils import dist_print
 
 if __name__ == "__main__":

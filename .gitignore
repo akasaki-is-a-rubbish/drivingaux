@@ -1,4 +1,7 @@
 *.pth
+*.onnx
 __pycache__
 .vscode
 *.avi
+*.webm
+*.bin
