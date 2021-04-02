@@ -5,6 +5,7 @@ from utils.asynchelper import TaskStreamMultiplexer
 import websockets
 import json
 import numpy as np
+import cv2
 
 # websocket server
 async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, config):
@@ -25,7 +26,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
                     image: np.ndarray = result
-                    shape, buffer = image.shape, image.tobytes("C")
+                    shape, buffer = image.shape, cv2.imencode("*.bmp", image).tobytes("C")
                     # print(shape, len(buffer))
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0]}}))
                     await websocket.send(buffer)
