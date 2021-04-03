@@ -18,13 +18,15 @@ class CameraThreadoo(Thread):
         this.logger = Logger(name, ic=IconMode.star_filled, ic_color=IconColor.red)
         this.cams = {}
         this.frames_broadcaster = {}
+        this.print_on_screen = {}
         this.delay = 0.03
         this.logger.log("Ready.")
 
-    def register(this, video_capture: cv2.VideoCapture, name, wait_for_frame_ready=False):
+    def register(this, video_capture: cv2.VideoCapture, name, wait_for_frame_ready=False, print_on_screen=False):
         assert name is not None
         this.frames_broadcaster[name] = Broadcaster()
         this.cams[name] = video_capture
+        this.print_on_screen[name] = print_on_screen
         this.logger.log(f"New video capture registered: {name}")
         if wait_for_frame_ready:
             this.logger.log(f"Waiting for capture({name})...")
@@ -36,6 +38,9 @@ class CameraThreadoo(Thread):
         while True:
             for key, value in this.cams.items():
                 ok, img = value.read()
+                if this.print_on_screen[key]:
+                    cv2.imshow(key, img)
+                    cv2.waitKey(10)
                 if ok:
                     this.frames_broadcaster[key].set_current(img)
             sleep(this.delay)

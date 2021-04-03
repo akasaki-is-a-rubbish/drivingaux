@@ -14,7 +14,7 @@ from src.visualdust.visual.ultra_fast_lane import LaneDetector
 class LaneDetectService(Thread):
     detector: LaneDetector
 
-    def __init__(this, lane_detector, capture_thread, capture_name, name="DetectService", with_display=False):
+    def __init__(this, lane_detector, capture_thread, capture_name, name="DetectService", print_on_screen=False):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
@@ -22,7 +22,7 @@ class LaneDetectService(Thread):
         this.capture_thread = capture_thread
         this.capture_name = capture_name
         this.data_broadcaster = Broadcaster()
-        this.with_display = with_display
+        this.print_on_screen = print_on_screen
         this.current = []
         this.logger.log("Ready.")
 
@@ -43,8 +43,8 @@ class LaneDetectService(Thread):
             this.current = out_converted
             this.data_broadcaster.set_current(out_converted)
             # print("processed")
-            if this.with_display:
-                cv2.imshow(this.capture_name, draw_result_on(frame, out_converted))
+            if this.print_on_screen:
+                cv2.imshow("LaneDetection on " + this.capture_name, draw_result_on(frame, out_converted))
                 cv2.waitKey(10)
 
     def now(this):
