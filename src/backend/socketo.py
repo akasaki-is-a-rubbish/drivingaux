@@ -29,6 +29,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
                     image: np.ndarray = result
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
                     buffer = image.tobytes("C")
                     # print(shape, len(buffer))

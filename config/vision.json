@@ -6,5 +6,5 @@
   "backbone": "18",
   "cls_num_per_lane": 18,
   "num_lanes": 2,
-  "with_gpu": false
+  "with_gpu": true
 }
