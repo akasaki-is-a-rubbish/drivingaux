@@ -38,6 +38,7 @@ class CameraThreadoo(Thread):
         while True:
             for key, value in this.cams.items():
                 ok, img = value.read()
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 if this.print_on_screen[key]:
                     cv2.imshow(key, img)
                     cv2.waitKey(10)

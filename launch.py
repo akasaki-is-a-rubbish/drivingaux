@@ -26,7 +26,7 @@ camera_service.start()
 # creating lane detector
 detector = LaneDetector(vision_config)
 lane_detect_service = LaneDetectService(detector, camera_service, "fronting")
-# lane_detect_service.start()
+lane_detect_service.start()
 
 
 async def check_sensor_values():
