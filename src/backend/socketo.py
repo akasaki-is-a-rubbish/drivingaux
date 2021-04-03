@@ -30,8 +30,8 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
                 elif which_func == task_video:
                     image: np.ndarray = result
                     shape = image.shape
-                    ok, img = cv2.imencode("*.bmp", image)
-                    buffer = img.tobytes("C")
+                    # ok, image = cv2.imencode("*.bmp", image)
+                    buffer = image.tobytes("C")
                     # print(shape, len(buffer))
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0]}}))
                     await websocket.write_frame(True, 0x02, buffer)
