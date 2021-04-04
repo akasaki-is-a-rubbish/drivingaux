@@ -12,13 +12,13 @@ from src.visualdust.visual.ultra_fast_lane import LaneDetector
 
 
 class LaneDetectService(Thread):
-    detector: LaneDetector
+    detector_ufld: LaneDetector
 
     def __init__(this, lane_detector, capture_thread, capture_name, name="DetectService", print_on_screen=False):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
-        this.detector = lane_detector
+        this.detector_ufld = lane_detector
         this.capture_thread = capture_thread
         this.capture_name = capture_name
         this.data_broadcaster = Broadcaster()
@@ -38,8 +38,8 @@ class LaneDetectService(Thread):
             """
             Test only
             """
-            out = this.detector.process(frame)
-            out_converted = this.detector.convert_result(out, (frame.shape[0], frame.shape[1]))
+            out = this.detector_ufld.process(frame)
+            out_converted = this.detector_ufld.convert_result(out, (frame.shape[0], frame.shape[1]))
             this.current = out_converted
             this.data_broadcaster.set_current(out_converted)
             # print("processed")

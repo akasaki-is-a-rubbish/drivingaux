@@ -10,7 +10,7 @@ from utils.logging import *
 
 class LaneDetector:
     def __init__(this, config):
-        this.logger = Logger("Detector-" + str(this.__hash__()), ic=IconMode.setting, ic_color=IconColor.cyan)
+        this.logger = Logger("UFLDetector-" + str(this.__hash__()), ic=IconMode.setting, ic_color=IconColor.cyan)
         assert config["backbone"] in \
                ['18', '34', '50', '101', '152', '50next', '101next', '50wide', '101wide']
         this.logger.log("Parsing net...")
@@ -26,7 +26,7 @@ class LaneDetector:
             this.with_gpu = False
         this.griding_num = config["griding_num"]
         this.logger.log("Loading model...")
-        state_dict = torch.load(config["model"], map_location='cpu')['model']
+        state_dict = torch.load(config["model_ufld"], map_location='cpu')['model']
         compatible_state_dict = {}
         for k, v in state_dict.items():
             if 'module.' in k:

@@ -1,10 +1,12 @@
 {
-  "video_capture": "/home/visualdust/workspace/服创/video/4K Scenic Byway 12 _ All American Road in Utah, USA - 5 Hour of Road Drive with Relaxing Music-ZOZOqbK86t0.webm",
+  "video_capture": "/home/visualdust/workspace/服创/video/720p Scenic Byway 12 _ All American Road in Utah, USA - 5 Hour of Road Drive.webm",
+  "observing_on": "fronting",
   "reshape": true,
-  "model": "./model/culane_18.pth",
+  "model_ufld": "./model/culane_18.pth",
+  "model_yolo": "./model/yolov5s.pt",
   "griding_num": 200,
   "backbone": "18",
   "cls_num_per_lane": 18,
   "num_lanes": 2,
-  "with_gpu": true
+  "with_gpu": false
 }

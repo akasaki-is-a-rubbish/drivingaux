@@ -20,12 +20,12 @@ logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info()
 hub = Hub.parse_config(hub_config)
 # creating capture thread none blocking
 camera_service = CameraThreadoo()
-camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), "fronting", True)
+camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), vision_config["observing_on"], True)
 camera_service.start()
 
 # creating lane detector
 detector = LaneDetector(vision_config)
-lane_detect_service = LaneDetectService(detector, camera_service, "fronting")
+lane_detect_service = LaneDetectService(detector, camera_service, vision_config["observing_on"])
 lane_detect_service.start()
 
 
