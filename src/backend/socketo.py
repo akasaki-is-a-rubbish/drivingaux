@@ -16,18 +16,28 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
     async def client_handler(websocket: websockets.WebSocketServerProtocol, path):
         logger.log("Websocket client connected.")
 
+        image_requested = False
+
+        task_recv = lambda: websocket.recv()
         task_sensors = lambda: hub.get_update()
         task_video = lambda: camera_service.get_next('fronting')
         task_points = lambda: detect_service.data_broadcaster.get_next()
-        tasks = TaskStreamMultiplexer([task_sensors, task_video, task_points])
+        tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points])
 
         try:
             while True:
                 which_func, result = await tasks.next()
-                if which_func == task_sensors:
+                if which_func == task_recv:
+                    obj = json.loads(result)
+                    if obj['cmd'] == 'requestImage':
+                        image_requested = True
+                elif which_func == task_sensors:
                     name, val = result
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
+                    if image_requested == False:
+                        continue
+                    image_requested = False
                     image: np.ndarray = result
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
