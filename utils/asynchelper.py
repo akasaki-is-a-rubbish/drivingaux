@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Callable, Coroutine
+from typing import List, Callable, Coroutine, Any
 
 # Use a single loop from all threads
 loop = asyncio.new_event_loop()
@@ -57,22 +57,25 @@ class Broadcaster(object):
 
 
 class TaskStreamMultiplexer(object):
+    _funcs: List[(Callable[[], Coroutine], asyncio.Task)]
 
     def __init__(this, funcs: List[Callable[[], Coroutine]]):
-        this._funcs: List[(Callable[[], Coroutine], asyncio.Task)] = [(x, None) for x in funcs]
+        this._funcs = [(x, None) for x in funcs]
 
-    async def next(this):
+    async def next(this) -> (Callable, Any):
+        "Keep all coroutines running as tasks and wait until any task completed and return the function and the result"
+
+        # Start all coroutines if it's first running, or restrat the task whose result was returned before.
         for i, item in enumerate(this._funcs):
             func, task = item
             if task == None:
                 task = asyncio.create_task(func())
                 this._funcs[i] = (func, task)
-            elif task.done():
-                this._funcs[i] = (func, None)
-                return (func, task.result())
 
+        # Wait until any task completed
         done, pending = await asyncio.wait([task for (func, task) in this._funcs], return_when=asyncio.FIRST_COMPLETED)
 
+        # Find the func whose task is done
         for i, item in enumerate(this._funcs):
             func, task = item
             if task.done():
