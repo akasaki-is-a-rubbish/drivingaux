@@ -1,3 +1,5 @@
+from src.visualdust.visual.detect_service import TargetDetectService
+from src.visualdust.visual.you_only_look_once import TargetDetector
 from src.visualdust.visual.detect_service import LaneDetectService
 from src.visualdust.visual.cam_noneblocking import CameraThreadoo
 from src.visualdust.visual.ultra_fast_lane import LaneDetector
@@ -24,10 +26,15 @@ camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), vision
 camera_service.start()
 
 # creating lane detector
-detector = LaneDetector(vision_config)
-lane_detect_service = LaneDetectService(detector, camera_service, vision_config["observing_on"])
+lane_detector = LaneDetector(vision_config)
+lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"])
 lane_detect_service.start()
 
+# creating target detector
+target_detector = TargetDetector(vision_config)
+target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"],
+                                              time_delay=0.3)
+# target_detector_service.start()
 
 async def check_sensor_values():
     while len(hub.values.keys()) == 0:

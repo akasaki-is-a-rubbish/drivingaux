@@ -57,7 +57,7 @@ class Broadcaster(object):
 
 
 class TaskStreamMultiplexer(object):
-    _funcs: List[(Callable[[], Coroutine], asyncio.Task)]
+    # _funcs: List[(Callable[[], Coroutine], asyncio.Task)]
 
     def __init__(this, funcs: List[Callable[[], Coroutine]]):
         this._funcs = [(x, None) for x in funcs]

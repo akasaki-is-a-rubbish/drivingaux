@@ -46,7 +46,6 @@ class TargetDetector:
 
     def pre_processing(this, image):
         converted = letterbox(image)[0]
-
         # Convert
         converted = converted[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
         converted = np.ascontiguousarray(converted)
@@ -59,3 +58,7 @@ class TargetDetector:
             converted = converted.unsqueeze(0)
         pred = this.model(converted / 255.0)
         return this.post_processing(non_max_suppression(pred[0], agnostic=False), image.shape)
+
+    def convert_result(this,result):
+        # todo what to do
+        pass
