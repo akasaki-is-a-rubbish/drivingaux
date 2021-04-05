@@ -15,7 +15,8 @@ from src.visualdust.visual.ultra_fast_lane import LaneDetector
 class LaneDetectService(Thread):
     detector_ufld: LaneDetector
 
-    def __init__(this, lane_detector, capture_thread, capture_name, time_delay = 0. ,name="LaneDetectService", print_on_screen=False):
+    def __init__(this, lane_detector, capture_thread, capture_name, time_delay=0., name="LaneDetectService",
+                 print_on_screen=False):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
@@ -55,7 +56,7 @@ class LaneDetectService(Thread):
 
 
 class TargetDetectService(Thread):
-    def __init__(this, target_detector, capture_thread, capture_name,time_delay=0., name="TargetDetectService"):
+    def __init__(this, target_detector, capture_thread, capture_name, time_delay=0., name="TargetDetectService"):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
