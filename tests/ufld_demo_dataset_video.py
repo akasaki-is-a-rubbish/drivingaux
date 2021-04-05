@@ -1,5 +1,5 @@
 import os, cv2
-from model.model import parsingNet
+from models.ufld_model import parsingNet
 from utils.ufld_common import merge_config
 from utils.dist_utils import dist_print
 import torch

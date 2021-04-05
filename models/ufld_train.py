@@ -1,6 +1,6 @@
 import torch, os, datetime
 import time
-from model.model import parsingNet
+from models.ufld_model import parsingNet
 from data.com.cfzd.dataloader import get_train_loader
 from utils.dist_utils import dist_print, dist_tqdm
 from utils.factory import get_metric_dict, get_loss_dict, get_optimizer, get_scheduler

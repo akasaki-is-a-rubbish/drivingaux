@@ -1,7 +1,7 @@
 import torch
 import time
 import numpy as np
-from model.model import parsingNet
+from models.ufld_model import parsingNet
 
 # torch.backends.cudnn.deterministic = False
 

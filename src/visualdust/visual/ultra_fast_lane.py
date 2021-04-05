@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 
-from model.model import parsingNet
+from models.ufld_model import parsingNet
 from utils.logging import *
 
 

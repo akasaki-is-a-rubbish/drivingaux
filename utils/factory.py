@@ -1,4 +1,4 @@
-from model.loss import SoftmaxFocalLoss, ParsingRelationLoss, ParsingRelationDis
+from models.ufld_loss import SoftmaxFocalLoss, ParsingRelationLoss, ParsingRelationDis
 from utils.metrics import MultiLabelAcc, AccTopk, Metric_mIoU
 
 import torch

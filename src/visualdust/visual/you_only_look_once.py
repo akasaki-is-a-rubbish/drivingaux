@@ -1,11 +1,4 @@
-import numpy as np
-import scipy.special
-import torch
-import torchvision
-import torchvision.transforms as transforms
-from PIL import Image
 from utils.yolo_common import *
-from model.model import parsingNet
 from utils.logging import *
 from utils.general import *
 from utils.datasets import *
