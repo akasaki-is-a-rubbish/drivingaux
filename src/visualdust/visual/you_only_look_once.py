@@ -32,20 +32,30 @@ class TargetDetector:
     def post_processing(this, pred, original_img_shape):
         result = []
         for i, det in enumerate(pred):  # detections per image
+            s = ""
             if len(det):
                 det[:, :4] = scale_coords(original_img_shape[1:], det[:, :4], original_img_shape).round()
-                s = ""
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
                     s += f"{n} {this.names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                print(s)
                 result.append(det)
+            if len(s):
+                print(s.removesuffix(","))
         return result
 
+    def pre_processing(this, image):
+        converted = letterbox(image)[0]
+
+        # Convert
+        converted = converted[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+        converted = np.ascontiguousarray(converted)
+        return converted
+
     def process(this, image):
-        image = torch.from_numpy(image)
-        if image.ndimension() == 3:
-            image = image.unsqueeze(0)
-        pred = this.model(image / 255.0)
+        converted = this.pre_processing(image)
+        converted = torch.from_numpy(converted)
+        if converted.ndimension() == 3:
+            converted = converted.unsqueeze(0)
+        pred = this.model(converted / 255.0)
         return this.post_processing(non_max_suppression(pred[0], agnostic=False), image.shape)
