@@ -1,6 +1,7 @@
 from utils.yolo_common import *
 from utils.logging import *
 from utils.general import *
+import torch
 from utils.datasets import *
 
 
@@ -17,8 +18,8 @@ class TargetDetector:
             elif type(m) is Conv:
                 m._non_persistent_buffers_set = set()  # pytorch 1.6.0 compatibility
         this.model = model[-1]
-        if config["with_gpu"]:
-            this.model.gpu()
+        # if config["with_gpu"]:
+        #     this.model.gpu()
         this.names = this.model.module.names if hasattr(this.model, 'module') else this.model.names
         this.logger.log("Ready.")
 

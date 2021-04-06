@@ -33,8 +33,8 @@ lane_detect_service.start()
 # creating target detector
 target_detector = TargetDetector(vision_config)
 target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"],
-                                              time_delay=0.3)
-# target_detector_service.start()
+                                              time_delay=0.1)
+target_detector_service.start()
 
 async def check_sensor_values():
     while len(hub.values.keys()) == 0:

@@ -38,7 +38,6 @@ def __read_all__(path):
 # def __read_db_from_folder__(path):
 #     return tf.data.Dataset.from_tensor_slices(__read_all__(path))
 
-
 pixel_data = __read_all__(filepath)
 row_count = (pixel_data.shape)[0]
 column_count = (pixel_data.shape)[1]
