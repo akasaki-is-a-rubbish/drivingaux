@@ -10,7 +10,7 @@ import cv2
 
 
 # websocket server
-async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, config):
+async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, target_service, config):
     logger = Logger("Websocket", ic=IconMode.star, ic_color=IconColor.magenta)
 
     async def client_handler(websocket: websockets.WebSocketServerProtocol, path):
@@ -22,9 +22,11 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
         task_sensors = lambda: hub.get_update()
         task_video = lambda: camera_service.get_next('fronting')
         task_points = lambda: detect_service.data_broadcaster.get_next()
-        tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points])
+        task_targets = lambda: target_service.data_broadcaster.get_next()
+        tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points, task_targets])
 
         try:
+            # Client handler event loop:
             while True:
                 which_func, result = await tasks.next()
                 if which_func == task_recv:
@@ -42,13 +44,14 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, c
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
                     buffer = image.tobytes("C")
-                    # print(shape, len(buffer))
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0]}}))
                     await websocket.send(buffer)
                 elif which_func == task_points:
                     data = json.dumps({'frontPoints': [{'x': x, 'y': y} for [x, y] in result]})
-                    # print(result, j)
                     await websocket.send(data)
+                elif which_func == task_targets:
+                    print('targets result', result)
+                    # TODO
         except ConnectionClosed:
             logger.log("Websocket client disconnected.")
 

@@ -46,7 +46,7 @@ async def check_sensor_values():
 async def main():
     pass
     hub.start()
-    asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, websockets_config))
+    asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, target_detector_service, websockets_config))
     asyncio.create_task(check_sensor_values())
 
 
