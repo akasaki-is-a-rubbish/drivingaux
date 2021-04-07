@@ -28,7 +28,11 @@ class TargetDetector:
         for i, det in enumerate(pred):  # detections per image
             s = ""
             if len(det):
-                det[:, :4] = scale_coords(original_img_shape[1:], det[:, :4], original_img_shape).round()
+                ## FIXME:
+                # print('before scale', det[:, :4])
+                # det[:, :4] = scale_coords(original_img_shape[1:], det[:, :4], original_img_shape).round()
+                # print('after scale', det[:, :4])
+
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class

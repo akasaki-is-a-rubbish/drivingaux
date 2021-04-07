@@ -47,12 +47,11 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0]}}))
                     await websocket.send(buffer)
                 elif which_func == task_points:
-                    data = json.dumps({'frontPoints': [{'x': x, 'y': y} for [x, y] in result]})
+                    data = json.dumps({'lanePoints': [{'x': x, 'y': y} for [x, y] in result]})
                     await websocket.send(data)
                 elif which_func == task_targets:
-                    print('targets result', result)
                     await websocket.send(json.dumps({'targets': result}))
-                    # TODO
+
         except ConnectionClosed:
             logger.log("Websocket client disconnected.")
 
