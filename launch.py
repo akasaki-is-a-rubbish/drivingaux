@@ -10,6 +10,8 @@ from src.backend import socketo
 import asyncio
 import json
 import cv2
+import os, signal
+import time
 
 hub_config = json.load(open("./config/sensor.json"))
 websockets_config = json.load(open("./config/websocket.json"))
@@ -18,25 +20,8 @@ vision_config = json.load(open("./config/vision.json"))
 logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
 logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info().banner()
 
-# creating hub and register sensors
-hub = Hub.parse_config(hub_config)
-# creating capture thread none blocking
-camera_service = CameraThreadoo()
-camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), vision_config["observing_on"], True)
-camera_service.start()
 
-# creating lane detector
-lane_detector = LaneDetector(vision_config)
-lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"])
-lane_detect_service.start()
-
-# creating target detector
-target_detector = TargetDetector(vision_config)
-target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"],
-                                              time_delay=0.1)
-target_detector_service.start()
-
-async def check_sensor_values():
+async def check_sensor_values(hub):
     while len(hub.values.keys()) == 0:
         await hub.event_update.wait()
     logger.log(f"Sensor values ready")
@@ -44,14 +29,39 @@ async def check_sensor_values():
 
 # creating main task
 async def main():
-    pass
+
+    # creating hub and register sensors
+    hub = Hub.parse_config(hub_config)
     hub.start()
+
+    # creating capture thread none blocking
+    camera_service = CameraThreadoo()
+    camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), vision_config["observing_on"], True)
+    camera_service.start()
+
+    # creating lane detector
+    lane_detector = LaneDetector(vision_config)
+    lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"])
+    lane_detect_service.start()
+
+    # creating target detector
+    target_detector = TargetDetector(vision_config)
+    target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"],
+                                                time_delay=0.1)
+    target_detector_service.start()
+
     asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, target_detector_service, websockets_config))
-    asyncio.create_task(check_sensor_values())
+    asyncio.create_task(check_sensor_values(hub))
+    logger.log("Services ready.")
 
 
-logger.log("Ready. starting to loop...")
-# loop all
-asyncio.set_event_loop(loop)
-loop.run_until_complete(main())
-loop.run_forever()
+try:
+    # loop all
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main())
+    loop.run_forever()
+except Exception as e:
+    print(e, flush=True)
+finally:
+    time.sleep(0.1)
+    os.kill(os.getpid(), signal.SIGTERM)
