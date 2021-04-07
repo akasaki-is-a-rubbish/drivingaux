@@ -33,9 +33,12 @@ class TargetDetector:
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
                     s += f"{n} {this.names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                result.append(det)
+                det = det.tolist()
+                for tx in det:
+                    tx.append(this.names[int(tx[5])])
+                    result.append(tx)
             if len(s):
-                print(s.removesuffix(","))
+                print(s.removesuffix(", "))
         return result
 
     def pre_processing(this, image):
@@ -55,4 +58,4 @@ class TargetDetector:
 
     def convert_result(this,result):
         # todo what to do
-        pass
+        return result

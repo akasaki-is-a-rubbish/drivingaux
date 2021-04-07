@@ -2,7 +2,7 @@
   "mainLidar": {
     "port": "/dev/ttyUSB0",
     "type": "Lidar",
-    "ignored": false
+    "ignored": true
   },
   "front": {
     "port": "/dev/ttyUSB0",
