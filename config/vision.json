@@ -1,5 +1,5 @@
 {
-  "video_capture": "D:/720p.webm",
+  "video_capture": "/home/visualdust/workspace/服创/video/beijing.mp4",
   "observing_on": "fronting",
   "reshape": true,
   "model_ufld": "./models/culane_18.pth",
