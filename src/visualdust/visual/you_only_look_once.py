@@ -30,8 +30,8 @@ class TargetDetector:
             if len(det):
                 ## FIXME:
                 # print('before scale', det[:, :4])
-                det[:, :4] = scale_coords((640,640), det[:, :4], original_img_shape).round()
-                print('after scale', det[:, :4])
+                det[:, :4] = scale_coords((384,640), det[:, :4], original_img_shape).round()
+                # print('after scale', det[:, :4])
 
                 # Print results
                 for c in det[:, -1].unique():
@@ -58,7 +58,7 @@ class TargetDetector:
         if converted.ndimension() == 3:
             converted = converted.unsqueeze(0)
         pred = this.model(converted / 255.0)
-        return this.post_processing(non_max_suppression(pred[0], agnostic=False), image.shape)
+        return this.post_processing(non_max_suppression(pred[0], conf_thres=0.01, agnostic=False), image.shape)
 
     def convert_result(this,result):
         # todo what to do
