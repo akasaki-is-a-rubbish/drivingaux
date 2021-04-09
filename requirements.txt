@@ -1,0 +1,15 @@
+torch
+torchvision
+matplotlib
+tqdm
+easydict
+addict
+pyyaml
+scipy
+numpy
+pathspec
+serial
+rplidar
+rplidar-roboticia
+websockets
+pandas
