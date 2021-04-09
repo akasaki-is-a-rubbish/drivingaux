@@ -44,16 +44,24 @@ class Broadcaster(object):
     def __init__(this):
         this.event_update = Event()
         this.current = None
+        this.seq = 0
 
     def set_current(this, val):
         """Set current value (called from ANY thread)"""
         this.current = val
+        this.seq += 1
         this.event_update.set_and_clear_threadsafe()
 
     async def get_next(this):
         """Wait until the value updated and return it (called from asyncio code ONLY)"""
         await this.event_update.wait()
         return this.current
+
+    async def get_next_with_seq(this):
+        """Wait until the value updated and return it (called from asyncio code ONLY)"""
+        await this.event_update.wait()
+        return (seq, this.current)
+
 
 
 class TaskStreamMultiplexer(object):

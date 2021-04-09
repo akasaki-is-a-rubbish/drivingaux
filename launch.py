@@ -41,14 +41,13 @@ async def main():
 
     # creating lane detector
     lane_detector = LaneDetector(vision_config)
-    lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"])
-    lane_detect_service.start()
+    lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"],time_delay=0.3)
+    # lane_detect_service.start()
 
     # creating target detector
     target_detector = TargetDetector(vision_config)
-    target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"],
-                                                time_delay=0.1)
-    target_detector_service.start()
+    target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"])
+    # target_detector_service.start()
 
     asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, target_detector_service, websockets_config))
     asyncio.create_task(check_sensor_values(hub))

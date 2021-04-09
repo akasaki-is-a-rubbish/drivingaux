@@ -20,7 +20,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
 
         task_recv = lambda: websocket.recv()
         task_sensors = lambda: hub.get_update()
-        task_video = lambda: camera_service.get_next('fronting')
+        task_video = lambda: camera_service.frames_broadcaster['fronting'].get_next_with_seq()
         task_points = lambda: detect_service.data_broadcaster.get_next()
         task_targets = lambda: target_service.data_broadcaster.get_next()
         tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points, task_targets])
@@ -37,14 +37,14 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
                     name, val = result
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
-                    if image_requested == False:
-                        continue
+                    # if image_requested == False:
+                    #     continue
                     image_requested = False
-                    image: np.ndarray = result
+                    seq, image = result
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
                     buffer = image.tobytes("C")
-                    await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0]}}))
+                    await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0], 'seq': seq}}))
                     await websocket.send(buffer)
                 elif which_func == task_points:
                     data = json.dumps({'lanePoints': [{'x': x, 'y': y} for [x, y] in result]})
