@@ -60,7 +60,7 @@ class Broadcaster(object):
     async def get_next_with_seq(this):
         """Wait until the value updated and return it (called from asyncio code ONLY)"""
         await this.event_update.wait()
-        return (seq, this.current)
+        return (this.seq, this.current)
 
 
 
