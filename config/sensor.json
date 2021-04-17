@@ -1,28 +1,28 @@
 {
   "mainLidar": {
-    "port": "/dev/ttyUSB0",
+    "port": "/dev/ttyUSB2",
     "type": "Lidar",
-    "ignored": true
+    "ignored": false
   },
-  "front": {
+  "right": {
     "port": "/dev/ttyUSB0",
     "baudrate": 9600,
     "type": "Dist4x",
     "ignored": true
   },
-  "left": {
+  "front": {
     "port": "/dev/ttyUSB1",
     "baudrate": 9600,
     "type": "Dist4x",
     "ignored": true
   },
-  "back": {
+  "left": {
     "port": "/dev/ttyUSB2",
     "baudrate": 9600,
     "type": "Dist4x",
     "ignored": true
   },
-  "right": {
+  "back": {
     "port": "/dev/ttyUSB3",
     "baudrate": 9600,
     "type": "Dist4x",

@@ -1,5 +1,5 @@
 {
-  "video_capture": "/home/visualdust/workspace/服创/video/720p Scenic Byway 12 _ All American Road in Utah, USA - 5 Hour of Road Drive.webm",
+  "video_capture": "/home/visualdust/workspace/DrivingAuxiliary/video/beijing.mp4",
   "observing_on": "fronting",
   "reshape": true,
   "model_ufld": "./models/culane_18.pth",

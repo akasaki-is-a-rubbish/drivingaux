@@ -35,6 +35,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
                         image_requested = True
                 elif which_func == task_sensors:
                     name, val = result
+                    # print('sensors', name)
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
                     # if image_requested == False:
