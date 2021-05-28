@@ -81,9 +81,7 @@ class TargetDetectService(Thread):
             Test only
             """
             out = this.detector_yolo.process(frame)
-            out_converted = this.detector_yolo.convert_result(out)
-            this.current = out_converted
-            # todo what to do
+            this.current = out
             this.data_broadcaster.set_current(out_converted)
             time.sleep(this.time_delay)
             # if this.print_on_screen:

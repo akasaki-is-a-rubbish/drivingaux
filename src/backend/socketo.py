@@ -12,16 +12,23 @@ import cv2
 # websocket server
 async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, target_service, config):
     logger = Logger("Websocket", ic=IconMode.star, ic_color=IconColor.magenta)
-
+    """
+    @:param websocket connected with frontend
+    using sync io
+    """
     async def client_handler(websocket: websockets.WebSocketServerProtocol, path):
         logger.log("Websocket client connected.")
-
+        # the requested image
         image_requested = False
-
+        # the recieved task
         task_recv = lambda: websocket.recv()
+        # waiting for sensor update
         task_sensors = lambda: hub.get_update()
+        # captured frame
         task_video = lambda: camera_service.frames_broadcaster['fronting'].get_next_with_seq()
+        # waiting for detection service result
         task_points = lambda: detect_service.data_broadcaster.get_next()
+        # waiting for lane detection result
         task_targets = lambda: target_service.data_broadcaster.get_next()
         tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points, task_targets])
 
