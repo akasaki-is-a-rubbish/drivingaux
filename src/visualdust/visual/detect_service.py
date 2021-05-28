@@ -82,7 +82,7 @@ class TargetDetectService(Thread):
             """
             out = this.detector_yolo.process(frame)
             this.current = out
-            this.data_broadcaster.set_current(out_converted)
+            this.data_broadcaster.set_current(out)
             time.sleep(this.time_delay)
             # if this.print_on_screen:
             #     cv2.imshow("LaneDetection on " + this.capture_name, draw_result_on(frame, out_converted))
