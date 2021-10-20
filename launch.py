@@ -1,3 +1,4 @@
+import threading
 from src.visualdust.visual.detect_service import TargetDetectService
 from src.visualdust.visual.you_only_look_once import TargetDetector
 from src.visualdust.visual.detect_service import LaneDetectService
@@ -6,7 +7,7 @@ from src.visualdust.visual.ultra_fast_lane import LaneDetector
 from utils.logging import Logger, IconMode, IconColor
 from src.visualdust.serialthings.hub import Hub
 from utils.asynchelper import loop
-from src.backend import socketo
+from src.backend import socketo, node
 import asyncio
 import json
 import cv2
@@ -29,6 +30,9 @@ async def check_sensor_values(hub):
 
 # creating main task
 async def main():
+
+    # starting the vehicle network node
+    threading.Thread(None, node.init).start()
 
     # creating hub and register sensors
     hub = Hub.parse_config(hub_config)
