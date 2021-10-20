@@ -8,8 +8,12 @@ pyyaml
 scipy
 numpy
 pathspec
-serial
+pyserial
 rplidar
 rplidar-roboticia
 websockets
 pandas
+termcolor
+tensorboard
+pyserial
+seaborn
