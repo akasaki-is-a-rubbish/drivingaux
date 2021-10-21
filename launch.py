@@ -40,7 +40,12 @@ async def main():
 
     # creating capture thread none blocking
     camera_service = CameraThreadoo()
-    camera_service.register(cv2.VideoCapture(vision_config["video_capture"]), vision_config["observing_on"], True)
+    camsrc = vision_config["video_capture"]
+    cap = cv2.VideoCapture(camsrc)
+    if type(camsrc) != str:
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    camera_service.register(cap, vision_config["observing_on"], True)
     camera_service.start()
 
     # creating lane detector
