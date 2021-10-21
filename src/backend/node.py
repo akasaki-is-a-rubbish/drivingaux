@@ -36,7 +36,7 @@ def init(node_name):
     s.bind((ip, PORT)) # bind to the internal network only
     s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
-    nodes[ip] = dict(ip=ip, self=True, last_active=0, node_name=node_name)
+    nodes[ip] = dict(ip=ip, self=True, last_active=0, name=node_name)
 
     broadcast_data = MAGIC + json.dumps({'name': node_name}).encode('utf-8')
 
