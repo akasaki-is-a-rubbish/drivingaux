@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Callable, Coroutine, Any
+from typing import List, Callable, Coroutine, Any, Union
 
 # Use a single loop from all threads
 loop = asyncio.new_event_loop()
@@ -70,7 +70,7 @@ class TaskStreamMultiplexer(object):
     def __init__(this, funcs: List[Callable[[], Coroutine]]):
         this._funcs = [(x, None) for x in funcs]
 
-    async def next(this) -> (Callable, Any):
+    async def next(this) -> Union[Callable, Any]:
         "Keep all coroutines running as tasks and wait until any task completed and return the function and the result"
 
         # Start all coroutines if it's first running, or restrat the task whose result was returned before.

@@ -1,6 +1,7 @@
 from utils.logging import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
 from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.backend.node import get_nodes, on_nodes_update
 from utils.asynchelper import TaskStreamMultiplexer
 import websockets
 import time
@@ -18,8 +19,11 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
     """
     async def client_handler(websocket: websockets.WebSocketServerProtocol, path):
         logger.log("Websocket client connected.")
-        # the requested image
+
+        # Client state
+        image_enabled = False
         image_requested = False
+
         # the recieved task
         task_recv = lambda: websocket.recv()
         # waiting for sensor update
@@ -30,9 +34,16 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
         task_points = lambda: detect_service.data_broadcaster.get_next()
         # waiting for lane detection result
         task_targets = lambda: target_service.data_broadcaster.get_next()
-        tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points, task_targets])
+        # waiting for nodes change
+        task_nodes = lambda: on_nodes_update.wait()
+
+        tasks = TaskStreamMultiplexer([task_recv, task_sensors, task_video, task_points, task_targets, task_nodes])
+
+        async def send_nodes():
+            await websocket.send(json.dumps({'nodes': [*get_nodes().values()]}))
 
         try:
+            await send_nodes()
             # Client handler event loop:
             while True:
                 which_func, result = await tasks.next()
@@ -40,13 +51,15 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
                     obj = json.loads(result)
                     if obj['cmd'] == 'requestImage':
                         image_requested = True
+                    if obj['cmd'] == 'videoEnabled':
+                        image_enabled = obj['value']
                 elif which_func == task_sensors:
                     name, val = result
                     # print('sensors', name)
                     await websocket.send(json.dumps({name: val}))
                 elif which_func == task_video:
-                    # if image_requested == False:
-                    #     continue
+                    if image_enabled != True and image_requested == False:
+                        continue
                     image_requested = False
                     seq, image = result
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -59,6 +72,8 @@ async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, t
                     await websocket.send(data)
                 elif which_func == task_targets:
                     await websocket.send(json.dumps({'targets': result}))
+                elif which_func == task_nodes:
+                    await send_nodes()
 
         except ConnectionClosed:
             logger.log("Websocket client disconnected.")

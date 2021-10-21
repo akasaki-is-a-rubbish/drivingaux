@@ -32,7 +32,7 @@ async def check_sensor_values(hub):
 async def main():
 
     # starting the vehicle network node
-    threading.Thread(None, node.init).start()
+    threading.Thread(None, node.init, args=[websockets_config['nodeName']]).start()
 
     # creating hub and register sensors
     hub = Hub.parse_config(hub_config)
