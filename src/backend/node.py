@@ -1,4 +1,5 @@
 import json
+import sys
 import threading
 import time
 from time import sleep
@@ -56,9 +57,11 @@ def init(node_name):
                     on_nodes_update.set_and_clear_threadsafe()
 
     def receiver():
-        srecv = socket(AF_INET, SOCK_DGRAM)
-        srecv.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        srecv.bind(('', PORT))
+        srecv = s
+        if sys.platform not in ['win32', 'cygwin']:
+            srecv = socket(AF_INET, SOCK_DGRAM)
+            srecv.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            srecv.bind(('', PORT))
         while True:
             data, (ip, port) = srecv.recvfrom(1024)
             if data.startswith(MAGIC):
