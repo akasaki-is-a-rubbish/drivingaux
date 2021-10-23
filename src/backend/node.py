@@ -2,7 +2,7 @@ import json
 import threading
 import time
 from time import sleep
-from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST
+from socket import socket, AF_INET, SOCK_DGRAM, SOL_SOCKET, SO_BROADCAST, SO_REUSEADDR
 from typing import Dict
 from typing_extensions import TypedDict
 from utils.asynchelper import Broadcaster, Event
@@ -33,8 +33,9 @@ def init(node_name):
     if ip is None:
         return
     s = socket(AF_INET, SOCK_DGRAM)
-    s.bind((ip, PORT)) # bind to the internal network only
     s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+    s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+    s.bind((ip, PORT)) # bind to the internal network only
 
     nodes[ip] = dict(ip=ip, self=True, last_active=0, name=node_name)
 
@@ -55,8 +56,11 @@ def init(node_name):
                     on_nodes_update.set_and_clear_threadsafe()
 
     def receiver():
+        srecv = socket(AF_INET, SOCK_DGRAM)
+        srecv.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        srecv.bind(('', PORT))
         while True:
-            data, (ip, port) = s.recvfrom(1024)
+            data, (ip, port) = srecv.recvfrom(1024)
             if data.startswith(MAGIC):
                 if ip not in nodes:
                     logger.log("New node: " + ip)
