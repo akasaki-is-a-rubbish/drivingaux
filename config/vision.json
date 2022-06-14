@@ -1,12 +1,45 @@
 {
-  "video_capture": "/home/visualdust/workspace/DrivingAuxiliary/video/beijing.mp4",
-  "observing_on": "fronting",
-  "reshape": true,
-  "model_ufld": "./models/culane_18.pth",
-  "model_yolo": "./models/yolov5s.pt",
-  "griding_num": 200,
-  "backbone": "18",
-  "cls_num_per_lane": 18,
-  "num_lanes": 2,
-  "with_gpu": true
+  "cameras": {
+    "camera_front": {
+      "source": 0,
+      "enabled": false
+    },
+    "camera_video": {
+      "source": "/data/workspace/DrivingAuxiliary/video/beijing.mp4",
+      "enabled": true
+    }
+  },
+  "models": {
+    "yolo_target_detection": {
+      "weight": "./models/yolov5s.pt",
+      "camera_name": "camera_video",
+      "engine_check": "pytorch",
+      "enabled": true,
+      "reshape": true,
+      "with_gpu": false
+    },
+    "ultra_fast_lane": {
+      "weight": "./models/culane_18.pth",
+      "camera_name": "camera_video",
+      "enabled": true,
+      "cls_num_per_lane": 18,
+      "griding_num": 200,
+      "backbone": "18",
+      "num_lanes": 2,
+      "engine_check": "pytorch",
+      "with_gpu": false
+    },
+    "monodepth_estimation": {
+      "weight": "",
+      "camera_name": "camera_front",
+      "engine_check": "openvino",
+      "enabled": false
+    },
+    "image_segmentation": {
+      "weight": "",
+      "camera_name": "camera_front",
+      "engine_check": "openvino",
+      "enabled": false
+    }
+  }
 }

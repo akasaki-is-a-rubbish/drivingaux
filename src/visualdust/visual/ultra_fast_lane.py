@@ -26,7 +26,7 @@ class LaneDetector:
             this.with_gpu = False
         this.griding_num = config["griding_num"]
         this.logger.log("Loading model...")
-        state_dict = torch.load(config["model_ufld"], map_location='cpu')['model']
+        state_dict = torch.load(config["weight"], map_location='cpu')['model']
         compatible_state_dict = {}
         for k, v in state_dict.items():
             if 'module.' in k:

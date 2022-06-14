@@ -13,7 +13,7 @@ class TargetDetector:
             ic_color=IconColor.cyan,
         )
         this.logger.log("Loading weights...")
-        ckpt_loaded = torch.load(config["model_yolo"])
+        ckpt_loaded = torch.load(config["weight"])
         model = Ensemble()
         model.append(
             ckpt_loaded["ema" if ckpt_loaded.get("ema") else "model"]
@@ -61,7 +61,7 @@ class TargetDetector:
                     tx.append(this.names[int(tx[5])])
                     result.append(tx)
             if len(s):
-                print(s.removesuffix(", "))
+                print(s[:-2])
         return result
 
     def pre_processing(this, image):

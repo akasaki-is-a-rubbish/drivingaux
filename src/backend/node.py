@@ -30,7 +30,8 @@ def get_nodes():
     return nodes
 
 def init(node_name):
-    ip = ztinit()
+    # ip = ztinit()
+    ip = '0.0.0.0'
     if ip is None:
         return
     s = socket(AF_INET, SOCK_DGRAM)

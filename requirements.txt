@@ -9,7 +9,6 @@ scipy
 numpy
 pathspec
 pyserial
-rplidar
 rplidar-roboticia
 websockets
 pandas
@@ -17,3 +16,5 @@ termcolor
 tensorboard
 pyserial
 seaborn
+openvino
+openvino-dev

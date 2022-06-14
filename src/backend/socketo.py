@@ -1,7 +1,7 @@
 import requests
 from utils.logging import Logger, IconMode, IconColor
 from websockets.exceptions import ConnectionClosed
-from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.visualdust.visual.cam_noneblocking import CameraService
 from src.backend.node import get_nodes, on_nodes_update
 from utils.asynchelper import TaskStreamMultiplexer
 import websockets
@@ -15,7 +15,7 @@ config_id = json.load(open('config/id.json', 'r'))['encryptedId'];
 print('config_id', config_id)
 
 # websocket server
-async def websocket_serve(hub, detect_service, camera_service: CameraThreadoo, target_service, config):
+async def websocket_serve(hub, detect_service, camera_service: CameraService, target_service, config):
     logger = Logger("Websocket", ic=IconMode.star, ic_color=IconColor.magenta)
     """
     @:param websocket connected with frontend

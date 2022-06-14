@@ -1,8 +1,8 @@
 import threading
-from src.visualdust.visual.detect_service import TargetDetectService
+from src.visualdust.visual.visual_model_service import TargetDetectService
 from src.visualdust.visual.you_only_look_once import TargetDetector
-from src.visualdust.visual.detect_service import LaneDetectService
-from src.visualdust.visual.cam_noneblocking import CameraThreadoo
+from src.visualdust.visual.visual_model_service import LaneDetectService
+from src.visualdust.visual.cam_noneblocking import CameraService
 from src.visualdust.visual.ultra_fast_lane import LaneDetector
 from utils.logging import Logger, IconMode, IconColor
 from src.visualdust.serialthings.hub import Hub
@@ -30,7 +30,6 @@ async def check_sensor_values(hub):
 
 # creating main task
 async def main():
-
     # starting the vehicle network node
     threading.Thread(None, node.init, args=[websockets_config['nodeName']]).start()
 
@@ -39,26 +38,19 @@ async def main():
     hub.start()
 
     # creating capture thread none blocking
-    camera_service = CameraThreadoo()
-    camsrc = vision_config["video_capture"]
-    cap = cv2.VideoCapture(camsrc)
-    if type(camsrc) != str:
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    camera_service.register(cap, vision_config["observing_on"], True)
+    camera_service = CameraService(vision_config["cameras"])
     camera_service.start()
 
     # creating lane detector
-    lane_detector = LaneDetector(vision_config)
-    lane_detect_service = LaneDetectService(lane_detector, camera_service, vision_config["observing_on"],time_delay=0.1)
+    lane_detect_service = LaneDetectService(vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.1)
     lane_detect_service.start()
 
     # creating target detector
-    target_detector = TargetDetector(vision_config)
-    target_detector_service = TargetDetectService(target_detector, camera_service, vision_config["observing_on"])
+    target_detector_service = TargetDetectService(vision_config["models"]["yolo_target_detection"], camera_service)
     target_detector_service.start()
 
-    asyncio.create_task(socketo.websocket_serve(hub, lane_detect_service, camera_service, target_detector_service, websockets_config))
+    asyncio.create_task(
+        socketo.websocket_serve(hub, lane_detect_service, camera_service, target_detector_service, websockets_config))
     asyncio.create_task(check_sensor_values(hub))
     logger.log("Services ready.")
 
