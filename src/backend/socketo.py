@@ -33,7 +33,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraService, ta
         # waiting for sensor update
         task_sensors = lambda: hub.get_update()
         # captured frame
-        task_video = lambda: camera_service.frames_broadcaster['fronting'].get_next_with_seq()
+        task_video = lambda: camera_service.frames_broadcaster['camera_video'].get_next_with_seq()
         # waiting for detection service result
         task_points = lambda: detect_service.data_broadcaster.get_next()
         # waiting for lane detection result

@@ -1,7 +1,7 @@
 {
   "cameras": {
     "camera_front": {
-      "source": 0,
+      "source": "/dev/video0",
       "enabled": false
     },
     "camera_video": {
@@ -30,12 +30,19 @@
       "with_gpu": false
     },
     "monodepth_estimation": {
+      "weight": "./models/MiDaS_small.xml",
+      "camera_name": "camera_front",
+      "reference_threshold": 0.5,
+      "engine_check": "openvino",
+      "enabled": false
+    },
+    "road_segmentation": {
       "weight": "",
       "camera_name": "camera_front",
       "engine_check": "openvino",
       "enabled": false
     },
-    "image_segmentation": {
+    "panoptic_segmentation": {
       "weight": "",
       "camera_name": "camera_front",
       "engine_check": "openvino",
