@@ -12,7 +12,7 @@ from .zt import init as ztinit
 
 PORT = 8766
 MAGIC = 'i_am_a_net_node'.encode('utf-8')
-HEARTBEAT_INTERVAL = 3
+HEARTBEAT_INTERVAL = 2
 
 logger = Logger('NetNode', ic=IconMode.star_filled, ic_color=IconColor.blue)
 

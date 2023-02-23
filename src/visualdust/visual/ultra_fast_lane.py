@@ -3,7 +3,6 @@ import scipy.special
 import torch
 import torchvision.transforms as transforms
 from PIL import Image
-
 from models.ufld_model import parsingNet
 from utils.logging import *
 
@@ -26,7 +25,7 @@ class LaneDetector:
             this.with_gpu = False
         this.griding_num = config["griding_num"]
         this.logger.log("Loading model...")
-        state_dict = torch.load(config["weight"], map_location='cpu')['model']
+        state_dict = torch.load(config["weight"], map_location='cuda' if this.with_gpu else 'cpu')['model']
         compatible_state_dict = {}
         for k, v in state_dict.items():
             if 'module.' in k:

@@ -20,7 +20,7 @@ class CameraService(Thread):
         this.cams = {}
         this.frames_broadcaster = {}
         this.print_on_screen = {}
-        this.delay = 0.03
+        this.delay = 0.01
         for cam_name, cam_src in config.items():
             if not config[cam_name]["enabled"]:
                 this.logger.log(

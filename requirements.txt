@@ -8,6 +8,7 @@ pyyaml
 scipy
 numpy
 pathspec
+termcolor
 pyserial
 rplidar-roboticia
 websockets

@@ -76,7 +76,7 @@ async def websocket_serve(hub, detect_service, camera_service: CameraService, ta
                         continue
                     image_requested = False
                     seq, image = result
-                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
                     buffer = image.tobytes("C")
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0], 'seq': seq}}))

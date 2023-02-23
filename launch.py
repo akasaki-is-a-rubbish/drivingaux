@@ -1,6 +1,7 @@
 import threading
 from src.visualdust.visual.visual_model_service import TargetDetectService
 from src.visualdust.visual.visual_model_service import LaneDetectService
+from src.visualdust.visual.visual_model_service import SegmentationService
 from src.visualdust.visual.cam_noneblocking import CameraService
 from utils.logging import Logger, IconMode, IconColor
 from src.visualdust.serialthings.hub import Hub
@@ -39,15 +40,18 @@ async def main():
     camera_service.start()
 
     # creating lane detector
-    lane_detect_service = LaneDetectService(vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.1)
+    lane_detect_service = LaneDetectService(vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.05)
     lane_detect_service.start()
 
     # creating target detector
     target_detector_service = TargetDetectService(vision_config["models"]["yolo_target_detection"], camera_service)
     target_detector_service.start()
 
+    image_segmentation_service = SegmentationService(vision_config["models"]["fast_segmentation"], camera_service)
+    image_segmentation_service.start()
+
     asyncio.create_task(
-        socketo.websocket_serve(sensor_hub, lane_detect_service, camera_service, target_detector_service,
+        socketo.websocket_serve(sensor_hub, lane_detect_service, camera_service, image_segmentation_service,
                                 websockets_config))
     asyncio.create_task(check_sensor_values(sensor_hub))
     logger.log("Services ready.")

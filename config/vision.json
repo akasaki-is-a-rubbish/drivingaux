@@ -5,7 +5,7 @@
       "enabled": false
     },
     "camera_video": {
-      "source": "/data/workspace/DrivingAuxiliary/video/beijing.mp4",
+      "source": "G:\\projects\\DrivingAuxiliary\\video\\beijing.mp4",
       "enabled": true
     }
   },
@@ -16,7 +16,7 @@
       "engine_check": "pytorch",
       "enabled": true,
       "reshape": true,
-      "with_gpu": false
+      "with_gpu": true
     },
     "ultra_fast_lane": {
       "weight": "./models/culane_18.pth",
@@ -27,7 +27,7 @@
       "backbone": "18",
       "num_lanes": 2,
       "engine_check": "pytorch",
-      "with_gpu": false
+      "with_gpu": true
     },
     "monodepth_estimation": {
       "weight": "./models/MiDaS_small.xml",
@@ -36,11 +36,12 @@
       "engine_check": "openvino",
       "enabled": false
     },
-    "road_segmentation": {
-      "weight": "",
-      "camera_name": "camera_front",
-      "engine_check": "openvino",
-      "enabled": false
+    "fast_segmentation": {
+      "weight": "./models/LPS-Net-S.pth",
+      "camera_name": "camera_video",
+      "engine_check": "pytorch",
+      "enabled": false,
+      "with_gpu": true
     },
     "panoptic_segmentation": {
       "weight": "",

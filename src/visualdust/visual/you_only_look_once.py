@@ -15,6 +15,7 @@ class TargetDetector:
         this.logger.log("Loading weights...")
         ckpt_loaded = torch.load(config["weight"])
         model = Ensemble()
+        this.gpu_enabled = config["with_gpu"]
         model.append(
             ckpt_loaded["ema" if ckpt_loaded.get("ema") else "model"]
             .float()
@@ -33,8 +34,8 @@ class TargetDetector:
             elif type(m) is Conv:
                 m._non_persistent_buffers_set = set()  # pytorch 1.6.0 compatibility
         this.model = model[-1]
-        # if config["with_gpu"]:
-        #     this.model.gpu()
+        if this.gpu_enabled:
+            model = model.cuda() 
         this.names = (
             this.model.module.names
             if hasattr(this.model, "module")
@@ -61,7 +62,8 @@ class TargetDetector:
                     tx.append(this.names[int(tx[5])])
                     result.append(tx)
             if len(s):
-                print(s[:-2])
+                # print(s[:-2])
+                pass
         return result
 
     def pre_processing(this, image):
@@ -74,7 +76,10 @@ class TargetDetector:
     def process(this, image):
         image_shape = image.shape
         converted, ratio, (dw, dh) = this.pre_processing(image)
-        converted = torch.from_numpy(converted)
+        if this.gpu_enabled:
+            converted = torch.from_numpy(converted).cuda()
+        else:
+            converted = torch.from_numpy(converted)
         if converted.ndimension() == 3:
             converted = converted.unsqueeze(0)
         pred = this.model(converted / 255.0)
