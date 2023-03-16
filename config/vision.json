@@ -5,7 +5,7 @@
       "enabled": false
     },
     "camera_video": {
-      "source": "G:\\projects\\DrivingAuxiliary\\video\\beijing.mp4",
+      "source": "F:\\projects\\DrivingAuxiliary\\video\\beijing.mp4",
       "enabled": true
     }
   },

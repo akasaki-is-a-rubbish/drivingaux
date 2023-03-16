@@ -13,7 +13,9 @@ import os, signal
 import time
 
 logger = Logger("Launcher", ic=IconMode.sakura, ic_color=IconColor.magenta)
-logger.print_txt_file("data/com/visualdust/banner.txt").banner().print_os_info().banner()
+logger.print_txt_file(
+    "data/com/visualdust/banner.txt"
+).banner().print_os_info().banner()
 
 
 async def check_sensor_values(hub):
@@ -26,7 +28,7 @@ async def check_sensor_values(hub):
 async def main():
     # starting the vehicle network node
     websockets_config = json.load(open("./config/websocket.json"))
-    threading.Thread(None, node.init, args=[websockets_config['nodeName']]).start()
+    threading.Thread(None, node.init, args=[websockets_config["nodeName"]]).start()
 
     # creating hub and register sensors
     hub_config = json.load(open("./config/sensor.json"))
@@ -40,19 +42,32 @@ async def main():
     camera_service.start()
 
     # creating lane detector
-    lane_detect_service = LaneDetectService(vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.05)
+    lane_detect_service = LaneDetectService(
+        vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.1
+    )
     lane_detect_service.start()
 
     # creating target detector
-    target_detector_service = TargetDetectService(vision_config["models"]["yolo_target_detection"], camera_service)
+    target_detector_service = TargetDetectService(
+        vision_config["models"]["yolo_target_detection"], camera_service, time_delay=0.1
+    )
     target_detector_service.start()
 
-    image_segmentation_service = SegmentationService(vision_config["models"]["fast_segmentation"], camera_service)
+    image_segmentation_service = SegmentationService(
+        vision_config["models"]["fast_segmentation"], camera_service, time_delay=0.05
+    )
     image_segmentation_service.start()
 
     asyncio.create_task(
-        socketo.websocket_serve(sensor_hub, lane_detect_service, camera_service, image_segmentation_service,
-                                websockets_config))
+        socketo.websocket_serve(
+            hub=sensor_hub,
+            lane_detect_service=lane_detect_service,
+            camera_service=camera_service,
+            target_service=target_detector_service,
+            segmentation_provider=image_segmentation_service,
+            config=websockets_config,
+        )
+    )
     asyncio.create_task(check_sensor_values(sensor_hub))
     logger.log("Services ready.")
 

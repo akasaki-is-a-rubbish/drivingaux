@@ -1,5 +1,8 @@
 import asyncio
 from typing import List, Callable, Coroutine, Any, Union
+from utils.logging import *
+
+logger = Logger("Async Helper", ic=IconMode.telephone_filled, ic_color=IconColor.red)
 
 # Use a single loop from all threads
 loop = asyncio.new_event_loop()
@@ -48,6 +51,8 @@ class Broadcaster(object):
 
     def set_current(this, val):
         """Set current value (called from ANY thread)"""
+        if val is None:
+            logger.err(f"{this} has just updated an NoneType val.")
         this.current = val
         this.seq += 1
         this.event_update.set_and_clear_threadsafe()

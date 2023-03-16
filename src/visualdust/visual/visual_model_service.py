@@ -27,9 +27,9 @@ class SegmentationService(Thread):
         while True:
             frame = this.capture_thread.now(this.capture_name)
             out = this.processor.process(frame)
+            out = this.processor.post_processing(out)
             this.current = out
-            # print("inference")
-            this.data_broadcaster.set_current(out)
+            this.data_broadcaster.set_current(this.current)
             time.sleep(this.time_delay)
 
     def now(this):
