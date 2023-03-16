@@ -17,8 +17,6 @@ print("config_id", config_id)
 
 # websocket server
 async def websocket_serve(
-    hub,
-    camera_service: CameraService,
     segmentation_provider: SegmentationService,
     config,
 ):
@@ -37,12 +35,7 @@ async def websocket_serve(
 
         # the recieved task
         task_recv = lambda: websocket.recv()
-        # waiting for sensor update
-        task_sensors = lambda: hub.get_update()
         # captured frame
-        task_video = lambda: camera_service.frames_broadcaster[
-            "camera_video"
-        ].get_next_with_seq()
         # waiting for detection service result
         # task_points = lambda: lane_detect_service.data_broadcaster.get_next()
         # waiting for segmentation provider result
@@ -55,9 +48,7 @@ async def websocket_serve(
         tasks = TaskStreamMultiplexer(
             [
                 task_recv,
-                task_sensors,
                 task_imgseg,
-                task_video,
                 task_nodes,
             ]
         )
@@ -77,7 +68,7 @@ async def websocket_serve(
         try:
             await send_nodes()
             # Client handler event loop:
-            cache = {}
+            frame_num=0
             while True:
                 which_func, result = await tasks.next()
                 if which_func == task_recv:
@@ -90,25 +81,16 @@ async def websocket_serve(
                         image_requested = True
                     if obj["cmd"] == "videoEnabled":
                         image_enabled = obj["value"]
-                elif which_func == task_sensors:
-                    name, val = result
-                    # print('sensors', name)
-                    await websocket.send(json.dumps({name: val}))
-                elif which_func == task_video:
+                elif which_func == task_imgseg:
                     if image_enabled != True and image_requested == False:
                         continue
                     image_requested = False
-                    seq, image = result
-                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    image = result
                     shape = image.shape
-                    if "task_imgseg" in cache:
-                        # todo wtf
-                        image = cv2.addWeighted(cache["task_imgseg"], .5, image, .5, .5)
                     buffer = image.tobytes("C")
-                    await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0], 'seq': seq}}))
+                    await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0], 'seq': frame_num}}))
+                    frame_num += 1
                     await websocket.send(buffer)
-                elif which_func == task_imgseg:
-                    cache["task_imgseg"] = result
                 elif which_func == task_nodes:
                     await send_nodes()
 

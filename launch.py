@@ -30,29 +30,20 @@ async def main():
     websockets_config = json.load(open("./config/websocket.json"))
     threading.Thread(None, node.init, args=[websockets_config["nodeName"]]).start()
 
-    # creating hub and register sensors
-    hub_config = json.load(open("./config/sensor.json"))
-    sensor_hub = Hub.parse_config(hub_config)
-    sensor_hub.start()
-
     vision_config = json.load(open("./config/vision.json"))
 
     # creating capture thread none blocking
     camera_service = CameraService(vision_config["cameras"])
-    camera_service.start()
 
-    image_segmentation_service = SegmentationService(vision_config["models"]["fast_segmentation"], camera_service)
+    image_segmentation_service = SegmentationService(vision_config["models"]["fast_segmentation"], camera_service.cams['camera_video'])
     image_segmentation_service.start()
 
     asyncio.create_task(
         socketo.websocket_serve(
-            hub=sensor_hub,
-            camera_service=camera_service,
             segmentation_provider=image_segmentation_service,
             config=websockets_config,
         )
     )
-    asyncio.create_task(check_sensor_values(sensor_hub))
     logger.log("Services ready.")
 
 

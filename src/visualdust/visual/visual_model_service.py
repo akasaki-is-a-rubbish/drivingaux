@@ -1,23 +1,25 @@
 from .you_only_look_once import TargetDetector
 from .ultra_fast_lane import LaneDetector
 from .fast_seger import FastSegmentation
+
 # from .monodepth_estimasion import DepthEstimator
 from utils.logging import *
 from utils.asynchelper import Event, Broadcaster
 from threading import Thread
 import time
+import numpy as np
+import cv2
 
 
 class SegmentationService(Thread):
-    processor : FastSegmentation
+    processor: FastSegmentation
 
-    def __init__(self, config, camera_service, time_delay = 0., name="SegmentationProvider"):
+    def __init__(self, config, camera, time_delay=0.0, name="SegmentationProvider"):
         Thread.__init__(self)
         self.name = name
         self.logger = Logger(self.name, ic=IconMode.java, ic_color=IconColor.yellow)
         self.processor = FastSegmentation(config)
-        self.capture_thread = camera_service
-        self.capture_name = config["camera_name"]
+        self.capture = camera
         self.data_broadcaster = Broadcaster()
         self.current = []
         self.time_delay = time_delay
@@ -25,20 +27,22 @@ class SegmentationService(Thread):
 
     def run(this) -> None:
         while True:
-            frame = this.capture_thread.now(this.capture_name)
+            _, frame = this.capture.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             out = this.processor.process(frame)
-            out = this.processor.post_processing(out)
-            this.current = out
+            this.current = cv2.addWeighted(out, 0.5, frame, 0.5, 0.0)
             this.data_broadcaster.set_current(this.current)
-            time.sleep(this.time_delay)
 
     def now(this):
         return this.current
 
+
 class LaneDetectService(Thread):
     processor: LaneDetector
 
-    def __init__(this, config, camera_service, time_delay=0., name="LaneDetectService"):
+    def __init__(
+        this, config, camera_service, time_delay=0.0, name="LaneDetectService"
+    ):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)
@@ -54,7 +58,9 @@ class LaneDetectService(Thread):
         while True:
             frame = this.capture_thread.now(this.capture_name)
             out = this.processor.process(frame)
-            out_converted = this.processor.convert_result(out, (frame.shape[0], frame.shape[1]))
+            out_converted = this.processor.convert_result(
+                out, (frame.shape[0], frame.shape[1])
+            )
             this.current = out_converted
             this.data_broadcaster.set_current(out_converted)
             time.sleep(this.time_delay)
@@ -66,7 +72,9 @@ class LaneDetectService(Thread):
 class TargetDetectService(Thread):
     processor: TargetDetector
 
-    def __init__(this, config, camera_service, time_delay=0., name="TargetDetectService"):
+    def __init__(
+        this, config, camera_service, time_delay=0.0, name="TargetDetectService"
+    ):
         Thread.__init__(this)
         this.name = name
         this.logger = Logger(this.name, ic=IconMode.java, ic_color=IconColor.yellow)

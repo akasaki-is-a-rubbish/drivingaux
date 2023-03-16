@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 from utils.logging import *
 from models.lpsnet import get_lspnet_s
 import collections
-from utils.datasets import cvt_cityscapes_idx_img_to_rgb
+from utils.datasets import cvt_seg_idx_img_to_rgb
+import time
 
 
 class FastSegmentation:
@@ -23,44 +24,41 @@ class FastSegmentation:
         self.net = get_lspnet_s(deploy=True)
         self.net.load_state_dict(torch.load(config["weight"], map_location="cpu"))
         self.net.eval()
-        if "with_gpu" in config and config["with_gpu"]:
-            self.with_gpu = True
-            self.net = self.net.cuda()
-        else:
-            self.with_gpu = False
         self.transform_img = ts.Compose(
             [
                 ts.ToTensor(),
                 ts.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
             ]
         )
-
-        def default_mapping_val():
-            return 0
-
-        self.label_mapping = collections.defaultdict(default_mapping_val)
-        self.label_mapping.update({10: 0})
+        self.label_mapper = torch.tensor([1,6,12],dtype=torch.uint8)
+        
+        if "with_gpu" in config and config["with_gpu"]:
+            self.with_gpu = True
+            self.net = self.net.cuda()
+            self.label_mapper = self.label_mapper.cuda()
+        else:
+            self.with_gpu = False
         self.logger.log("Model ready.")
+        
 
     def process(self, image):
         _input = self.transform_img(image)
-        _input = _input[None, :, :, :]
         if self.with_gpu:
             _input = _input.cuda()
-        logit = self.net(_input)
+        _input = _input[None, :, :, :]
+        pred = self.net(_input)
         pred = torch.argmax(
-            F.interpolate(logit, size=(720, 1280), mode="bilinear", align_corners=True),
+            F.interpolate(pred, size=(720, 1280), mode="bilinear", align_corners=True),
             dim=-3,
         )
+        pred = pred.type(torch.uint8)
         pred = pred.squeeze()
         for ignored_label in [0, 1, 3, 4, 5, 9, 10]:
             pred[pred == ignored_label] = 0
-        pred = pred.cpu().numpy()
+        pred = torch.stack((pred,) * 3, dim=-1) * self.label_mapper
+        
+        color_mask = pred.cpu().numpy()  # todo 0.01s
         # pred = np.repeat(pred[:, :, np.newaxis], 3, axis=2)
-        color_mask = cvt_cityscapes_idx_img_to_rgb(pred)
+        # stacked_img = np.stack((color_mask,)*3, axis=-1)
+        # color_mask = cvt_seg_idx_img_to_rgb(color_mask) # todo 0.032s
         return color_mask
-
-    def post_processing(this, pred):
-        for key in this.label_mapping.keys():
-            pred[pred == key] = this.label_mapping[key]
-        return pred

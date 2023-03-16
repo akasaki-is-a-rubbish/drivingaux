@@ -1056,7 +1056,7 @@ def autosplit(path='../coco128', weights=(0.9, 0.1, 0.0), annotated_only=False):
             with open(path / txt[i], 'a') as f:
                 f.write(str(img) + '\n')  # add image to txt file
 
-def cvt_cityscapes_idx_img_to_rgb(indexed_image):
+def cvt_seg_idx_img_to_rgb(indexed_image):
     color_map = np.array(
         [
             [1, 1, 1],  # road
@@ -1107,6 +1107,5 @@ def cvt_cityscapes_idx_img_to_rgb(indexed_image):
         (indexed_image.shape[0], indexed_image.shape[1], 3), dtype=np.uint8
     )
     for i in range(len(color_map)):
-        # mask = np.all(indexed_image == i)
         rgb_image[indexed_image == i] = color_map[i]
     return rgb_image
