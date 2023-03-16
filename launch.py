@@ -41,29 +41,13 @@ async def main():
     camera_service = CameraService(vision_config["cameras"])
     camera_service.start()
 
-    # creating lane detector
-    lane_detect_service = LaneDetectService(
-        vision_config["models"]["ultra_fast_lane"], camera_service, time_delay=0.1
-    )
-    lane_detect_service.start()
-
-    # creating target detector
-    target_detector_service = TargetDetectService(
-        vision_config["models"]["yolo_target_detection"], camera_service, time_delay=0.1
-    )
-    target_detector_service.start()
-
-    image_segmentation_service = SegmentationService(
-        vision_config["models"]["fast_segmentation"], camera_service, time_delay=0.05
-    )
+    image_segmentation_service = SegmentationService(vision_config["models"]["fast_segmentation"], camera_service)
     image_segmentation_service.start()
 
     asyncio.create_task(
         socketo.websocket_serve(
             hub=sensor_hub,
-            lane_detect_service=lane_detect_service,
             camera_service=camera_service,
-            target_service=target_detector_service,
             segmentation_provider=image_segmentation_service,
             config=websockets_config,
         )

@@ -43,7 +43,6 @@ class Queue(asyncio.Queue):
 
 
 class Broadcaster(object):
-    
     def __init__(this):
         this.event_update = Event()
         this.current = None
@@ -68,7 +67,6 @@ class Broadcaster(object):
         return (this.seq, this.current)
 
 
-
 class TaskStreamMultiplexer(object):
     # _funcs: List[(Callable[[], Coroutine], asyncio.Task)]
 
@@ -86,7 +84,9 @@ class TaskStreamMultiplexer(object):
                 this._funcs[i] = (func, task)
 
         # Wait until any task completed
-        done, pending = await asyncio.wait([task for (func, task) in this._funcs], return_when=asyncio.FIRST_COMPLETED)
+        done, pending = await asyncio.wait(
+            [task for (func, task) in this._funcs], return_when=asyncio.FIRST_COMPLETED
+        )
 
         # Find the func whose task is done
         for i, item in enumerate(this._funcs):

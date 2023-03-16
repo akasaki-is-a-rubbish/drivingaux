@@ -18,9 +18,7 @@ print("config_id", config_id)
 # websocket server
 async def websocket_serve(
     hub,
-    lane_detect_service: LaneDetectService,
     camera_service: CameraService,
-    target_service: TargetDetectService,
     segmentation_provider: SegmentationService,
     config,
 ):
@@ -46,11 +44,11 @@ async def websocket_serve(
             "camera_video"
         ].get_next_with_seq()
         # waiting for detection service result
-        task_points = lambda: lane_detect_service.data_broadcaster.get_next()
+        # task_points = lambda: lane_detect_service.data_broadcaster.get_next()
         # waiting for segmentation provider result
         task_imgseg = lambda: segmentation_provider.data_broadcaster.get_next()
         # waiting for lane detection result
-        task_targets = lambda: target_service.data_broadcaster.get_next()
+        # task_targets = lambda: target_service.data_broadcaster.get_next()
         # waiting for nodes change
         task_nodes = lambda: on_nodes_update.wait()
 
@@ -58,8 +56,6 @@ async def websocket_serve(
             [
                 task_recv,
                 task_sensors,
-                task_points,
-                task_targets,
                 task_imgseg,
                 task_video,
                 task_nodes,
@@ -106,19 +102,11 @@ async def websocket_serve(
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                     shape = image.shape
                     if "task_imgseg" in cache:
-                        # image = cache["task_imgseg"]*13
                         # todo wtf
-                        image = cache["task_imgseg"]*image
+                        image = cv2.addWeighted(cache["task_imgseg"], .5, image, .5, .5)
                     buffer = image.tobytes("C")
                     await websocket.send(json.dumps({'image': {'w': shape[1], 'h': shape[0], 'seq': seq}}))
                     await websocket.send(buffer)
-                elif which_func == task_points:
-                    data = json.dumps(
-                        {"lanePoints": [{"x": x, "y": y} for [x, y] in result]}
-                    )
-                    await websocket.send(data)
-                elif which_func == task_targets:
-                    await websocket.send(json.dumps({"targets": result}))
                 elif which_func == task_imgseg:
                     cache["task_imgseg"] = result
                 elif which_func == task_nodes:

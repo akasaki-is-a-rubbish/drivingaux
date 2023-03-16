@@ -20,7 +20,7 @@ class CameraService(Thread):
         this.cams = {}
         this.frames_broadcaster = {}
         this.print_on_screen = {}
-        this.delay = 0.01
+        this.delay = 0.
         for cam_name, cam_src in config.items():
             if not config[cam_name]["enabled"]:
                 this.logger.log(
@@ -28,8 +28,9 @@ class CameraService(Thread):
                 continue
             cap = cv2.VideoCapture(config[cam_name]["source"])
             if type(cam_src) != str:
-                cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+                image_size = config[cam_name]["size"]
+                cap.set(cv2.CAP_PROP_FRAME_WIDTH, image_size[0])
+                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, image_size[1])
             this.register(cap, cam_name, True)
             this.logger.log("Camera registered: " + cam_name + " at " + str(config[cam_name]["source"]))
         this.logger.log("Ready.")

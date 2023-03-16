@@ -2,11 +2,13 @@
   "cameras": {
     "camera_front": {
       "source": "/dev/video0",
-      "enabled": false
+      "enabled": false,
+      "size": [1280,720]
     },
     "camera_video": {
-      "source": "F:\\projects\\DrivingAuxiliary\\video\\beijing.mp4",
-      "enabled": true
+      "source": "E:\\projects\\DrivingAuxiliary\\video\\beijing.mp4",
+      "enabled": true,
+      "size": [1280,720]
     }
   },
   "models": {
@@ -14,7 +16,7 @@
       "weight": "./models/yolov5s.pt",
       "camera_name": "camera_video",
       "engine_check": "pytorch",
-      "enabled": true,
+      "enabled": false,
       "reshape": true,
       "with_gpu": true
     },

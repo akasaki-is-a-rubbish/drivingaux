@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from utils.logging import *
 from models.lpsnet import get_lspnet_s
 import collections
+from utils.datasets import cvt_cityscapes_idx_img_to_rgb
 
 
 class FastSegmentation:
@@ -38,26 +39,26 @@ class FastSegmentation:
             return 0
 
         self.label_mapping = collections.defaultdict(default_mapping_val)
-        self.label_mapping.update(
-            {
-                10:0
-            }
-        )
+        self.label_mapping.update({10: 0})
         self.logger.log("Model ready.")
 
     def process(self, image):
-        image = self.transform_img(image)
-        image = image[None, :, :, :]
+        _input = self.transform_img(image)
+        _input = _input[None, :, :, :]
         if self.with_gpu:
-            image = image.cuda()
-        logit = self.net(image)
+            _input = _input.cuda()
+        logit = self.net(_input)
         pred = torch.argmax(
             F.interpolate(logit, size=(720, 1280), mode="bilinear", align_corners=True),
             dim=-3,
         )
         pred = pred.squeeze()
-        pred = torch.swapaxes(torch.swapaxes(pred.repeat(3, 1, 1), 0, 1), 2, 1)
-        return np.uint8(pred.cpu())
+        for ignored_label in [0, 1, 3, 4, 5, 9, 10]:
+            pred[pred == ignored_label] = 0
+        pred = pred.cpu().numpy()
+        # pred = np.repeat(pred[:, :, np.newaxis], 3, axis=2)
+        color_mask = cvt_cityscapes_idx_img_to_rgb(pred)
+        return color_mask
 
     def post_processing(this, pred):
         for key in this.label_mapping.keys():
